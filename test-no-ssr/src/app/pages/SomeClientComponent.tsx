@@ -2,11 +2,11 @@
 
 export const SomeClientComponent = () => {
   const onClick = async () => {
-    const lodash = (
-      import.meta.env.SSR ? {} : await import("lodash")
-    ) as typeof import("lodash");
+    const moment = (
+      import.meta.env.SSR ? {} : (await import("moment")).default
+    ) as typeof import("moment");
 
-    console.log("#######", lodash.assignWith);
+    console.log("#######", moment.now());
   };
   return <button onClick={onClick}>Click me</button>;
 };
