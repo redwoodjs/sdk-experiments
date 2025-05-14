@@ -2,7 +2,7 @@
 import { checkImportA } from "./a";
 import useSWR from "swr";
 
-checkImportA("TestSWR (Client Component)");
+checkImportA("SSR");
 
 const fetcher = (...args: Parameters<typeof fetch>) =>
   fetch(...args).then((res) => res.json());

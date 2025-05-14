@@ -1,10 +1,20 @@
 import * as swr from "swr";
 
 export const checkImport = (origin: string) => {
-  console.log(
-    "########## import result keys: %s, default: %s, origin: %s",
-    Object.keys(swr),
-    swr.default,
-    origin
-  );
+  const gotCorrectImport =
+    origin === "SERVER" ? swr.default === undefined : swr.default !== undefined;
+
+  if (gotCorrectImport) {
+    console.log(
+      `########## ${origin} GOT CORRECT IMPORT!!!\n- keys: ${Object.keys(
+        swr
+      )}\n- default: ${swr.default}`
+    );
+  } else {
+    console.log(
+      `########## ${origin} GOT INCORRECT IMPORT\n- keys: ${Object.keys(
+        swr
+      )}\n- default: ${swr.default}`
+    );
+  }
 };

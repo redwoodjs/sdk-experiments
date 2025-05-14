@@ -2,7 +2,7 @@ import { RequestInfo } from "rwsdk/worker";
 import { checkImportA } from "./a";
 import { TestSWR } from "./TestSWR";
 
-checkImportA("Home (Server Component)");
+checkImportA("SERVER");
 
 export function Home({ ctx }: RequestInfo) {
   return (
