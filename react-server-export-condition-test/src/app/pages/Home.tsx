@@ -5,9 +5,5 @@ import { TestSWR } from "./TestSWR";
 checkImportA("SERVER");
 
 export function Home({ ctx }: RequestInfo) {
-  return (
-    <div>
-      <TestSWR />
-    </div>
-  );
+  return <div>{<TestSWR />}</div>;
 }
