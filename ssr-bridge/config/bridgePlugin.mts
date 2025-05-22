@@ -7,13 +7,24 @@ export default function bridgePlugin(): Plugin {
     configureServer(server) {
       devServer = server;
     },
+    async resolveId(id) {
+      if (id === "virtual:ssrBridge") {
+        return "virtual:ssrBridge";
+      }
+    },
     async load(id) {
       if (id === "virtual:ssrBridge") {
+        await devServer?.environments.ssr.warmupRequest("/src/ssrBridge.ts");
         const result = await devServer?.environments.ssr.fetchModule(
-          id.slice("ssr:".length)
+          "/src/ssrBridge.ts"
         );
 
-        return "code" in result ? result.code : undefined;
+        const code = "code" in result ? result.code : undefined;
+        console.log(
+          "################## reached load() virtual:ssrBridge, fetched as code:",
+          result
+        );
+        return code;
       }
     },
   };
