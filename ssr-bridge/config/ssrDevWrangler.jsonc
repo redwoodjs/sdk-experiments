@@ -2,6 +2,6 @@
   "name": "ssr",
   "compatibility_flags": ["nodejs_compat"],
   "compatibility_date": "2024-09-23",
-  "main": "src/worker.ts",
+  "main": "./ssrDevWorker.ts",
   "assets": {}
 }
