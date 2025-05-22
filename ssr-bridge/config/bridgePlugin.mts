@@ -7,9 +7,13 @@ export default function bridgePlugin(): Plugin {
     configureServer(server) {
       devServer = server;
     },
-    load(id) {
+    async load(id) {
       if (id.startsWith("ssr:")) {
-        return devServer?.environments.ssr.fetchModule(id.slice("ssr:".length));
+        const result = await devServer?.environments.ssr.fetchModule(
+          id.slice("ssr:".length)
+        );
+
+        return "code" in result ? result.code : undefined;
       }
     },
   };
