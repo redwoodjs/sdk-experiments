@@ -21,7 +21,7 @@ export default function bridgePlugin(): Plugin {
 
         const code = "code" in result ? result.code : undefined;
         console.log(
-          "################## reached load() virtual:ssrBridge, fetched as code:",
+          `################## reached load() virtual:ssrBridge in environment ${this.environment.name}, fetched as code:`,
           result
         );
         return code;
