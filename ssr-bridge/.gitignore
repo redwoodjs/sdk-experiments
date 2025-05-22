@@ -1,6 +1,9 @@
 # Node modules
-!node_modules/test-dep-a
-node_modules
+/node_modules/**
+
+# But don't ignore test-dep-a and its contents
+!node_modules/test-dep-a/
+!node_modules/test-dep-a/**
 
 # Logs
 logs
