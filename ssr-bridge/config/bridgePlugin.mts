@@ -8,7 +8,7 @@ export default function bridgePlugin(): Plugin {
       devServer = server;
     },
     async load(id) {
-      if (id.startsWith("virtual:ssrBridge")) {
+      if (id === "virtual:ssrBridge") {
         const result = await devServer?.environments.ssr.fetchModule(
           id.slice("ssr:".length)
         );
