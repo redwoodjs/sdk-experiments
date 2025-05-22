@@ -5,6 +5,10 @@
 !node_modules/test-dep-a/
 !node_modules/test-dep-a/**
 
+# But don't ignore test-dep-b and its contents
+!node_modules/test-dep-b/
+!node_modules/test-dep-b/**
+
 # Logs
 logs
 *.log

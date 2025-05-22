@@ -9,7 +9,11 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export default defineConfig({
   environments: {
     ssr: {},
-    rsc: {},
+    rsc: {
+      resolve: {
+        conditions: ["react-server"],
+      },
+    },
   },
   plugins: [
     cloudflare({
