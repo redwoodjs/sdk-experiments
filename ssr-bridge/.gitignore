@@ -1,4 +1,5 @@
 # Node modules
+!node_modules/test-dep-a
 node_modules
 
 # Logs
