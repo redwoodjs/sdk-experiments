@@ -1,5 +1,5 @@
 // @ts-ignore
-import "virtual:ssrBridge";
+import "virtual:ssrBridge.js";
 import "test-dep-b";
 
 export default {
