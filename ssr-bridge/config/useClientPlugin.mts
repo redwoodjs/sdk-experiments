@@ -1,6 +1,7 @@
 import { readFile } from "fs/promises";
 import { glob } from "glob";
 import path from "path";
+import MagicString from "magic-string";
 import type { Plugin } from "vite";
 
 export const findFilesContainingUseClient = async ({
@@ -68,17 +69,34 @@ export default async function useClientPlugin({
 
     useClientFiles.add(filePath);
 
-    if (env === "rsc") {
-      return {
-        code: `console.log('######### reached ${filePath} for RSC!');`,
-        map: null,
-      };
-    } else if (env === "ssr") {
-      return {
-        code: `console.log('######### reached ${filePath} for SSR!');`,
-        map: null,
-      };
+    const lines = contents.split("\n");
+    let i = 0;
+    while (i < lines.length && lines[i].trim().length === 0) i++;
+
+    if (
+      lines[i]?.trim() === '"use client"' ||
+      lines[i]?.trim() === "'use client'"
+    ) {
+      lines.splice(i, 1);
     }
+
+    if (env === "ssr" && lines[i]?.trim().startsWith("throw ")) {
+      lines.splice(i, 1);
+    }
+
+    const logLine =
+      env === "rsc"
+        ? `console.log('######### reached ${filePath} for RSC');`
+        : `console.log('######### reached ${filePath} for SSR');`;
+
+    lines.splice(0, 0, logLine);
+
+    const finalCode = lines.join("\n");
+
+    return {
+      code: finalCode,
+      map: null,
+    };
   }
 
   return {
