@@ -1,6 +1,7 @@
 import { cloudflare } from "@cloudflare/vite-plugin";
 import { defineConfig } from "vite";
 import bridgePlugin from "./config/bridgePlugin.mts";
+import useClientPlugin from "./config/useClientPlugin.mts";
 
 export default defineConfig({
   environments: {
@@ -29,5 +30,6 @@ export default defineConfig({
       },
     }),
     bridgePlugin(),
+    useClientPlugin({ projectRootDir: process.cwd() }),
   ],
 });
