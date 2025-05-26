@@ -1,10 +1,6 @@
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-
 import type { Plugin, ViteDevServer } from "vite";
-import { InlineConfig } from "vite";
 
-export default function bridgePlugin(): InlineConfig["plugins"] {
+export default function bridgePlugin(): Plugin {
   let devServer: ViteDevServer;
   let isDev = false;
 
@@ -21,8 +17,17 @@ export default function bridgePlugin(): InlineConfig["plugins"] {
         return "virtual:ssrBridge.js";
       }
     },
+    transform(code, id) {
+      if (id === "virtual:ssrBridge.js" && this.environment.name === "rsc") {
+        console.log(
+          "###### correctly received ssr bridge code in rsc environment transform hook!"
+        );
+        console.log(code);
+      }
+    },
     async load(id) {
       console.log("################## load", id, this.environment.name);
+
       if (id === "virtual:ssrBridge.js") {
         if (isDev) {
           await devServer?.environments.ssr.warmupRequest("/src/ssrBridge.ts");
