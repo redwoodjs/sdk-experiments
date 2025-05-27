@@ -14,5 +14,7 @@ export async function ssrTest(id: string) {
   }
 
   const result = await moduleFn();
+
+  console.log("###### ssrTest(): import result for %s: %O", id, result);
   result.test();
 }

@@ -47,45 +47,55 @@ export default function bridgePlugin(): Plugin {
       }
     },
     async resolveId(id) {
-      if (id === "virtual:ssrBridge.js") {
+      console.log("################## resolveId", id);
+
+      if (id.startsWith("virtual:ssr:") && isDev) {
         // context(justinvdm, 26 May 2025): In dev, we want to dynamically load the bridge
         // via the SSR environment. In build, we want to use the already built bridge.
-        if (isDev) {
-          return "virtual:ssrBridge.js";
-        } else {
-          console.log(
-            "################## reached load() virtual:ssrBridge for build in environment",
-            this.environment.name
-          );
-          return DIST_SSR_BRIDGE_PATH;
-        }
-      }
-    },
-    transform(code, id) {
-      if (id === "virtual:ssrBridge.js" && this.environment.name === "rsc") {
         console.log(
-          "###### correctly received ssr bridge code in rsc environment transform hook!"
+          "################## reached resolveId() virtual:ssr: in dev for environment",
+          this.environment.name,
+          id
         );
-        console.log(code);
+        return id;
+      }
+
+      if (id === "virtual:ssr:/src/ssrBridge.ts" && !isDev) {
+        console.log(
+          "################## reached load() virtual:ssrBridge for build in environment",
+          this.environment.name
+        );
+        return DIST_SSR_BRIDGE_PATH;
       }
     },
     async load(id) {
       console.log("################## load", id, this.environment.name);
 
-      if (id === "virtual:ssrBridge.js") {
+      if (id.startsWith("virtual:ssr:")) {
+        const realPath = id.slice("virtual:ssr:".length);
+
         if (isDev) {
-          await devServer?.environments.ssr.warmupRequest("/src/ssrBridge.ts");
+          await devServer?.environments.ssr.warmupRequest(realPath);
           const result = await devServer?.environments.ssr.fetchModule(
-            "/src/ssrBridge.ts"
+            realPath
           );
 
           const code = "code" in result ? result.code : undefined;
+          const transformedCode = `
+;(async function(__vite_ssr_import__, __vite_ssr_dynamic_import__) {
+${code}
+})(
+  (id) => console.log('### runtime import for %s', id) || __vite_ssr_import__('/@id/virtual:ssr:'+id),
+  (id) => console.log('### runtime dynamic import for %s', id) || __vite_ssr_dynamic_import__('/@id/virtual:ssr:'+id),
+);
+`;
           console.log(
-            `################## reached load() virtual:ssrBridge in environment ${this.environment.name}, fetched as code:`
+            `################## reached load() ssr virtual path ${realPath} in environment ${this.environment.name}, fetched and transformed code:`
           );
-          console.log(code);
 
-          return code;
+          console.log(transformedCode);
+
+          return transformedCode;
         }
       }
     },

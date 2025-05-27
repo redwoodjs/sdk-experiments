@@ -52,20 +52,35 @@ export default async function useClientPlugin({
   );
 
   function hasUseClient(code: string): boolean {
-    return code.includes('"use client"') || code.includes("'use client'");
+    const trimmedCode = code.trim();
+    return (
+      trimmedCode.startsWith('"use client"') ||
+      trimmedCode.startsWith("'use client'")
+    );
   }
 
   async function tryTransform({
     filePath,
     code,
     env,
+    caller,
   }: {
     filePath: string;
     env: string;
     code?: string;
+    caller: string;
   }) {
     const contents = code ?? (await readFile(filePath, "utf8"));
-    if (!hasUseClient(contents)) return null;
+
+    if (!hasUseClient(contents)) {
+      return null;
+    }
+
+    console.log("################## tryTransform() start", {
+      filePath,
+      env,
+      caller,
+    });
 
     useClientFiles.add(filePath);
 
@@ -80,27 +95,27 @@ export default async function useClientPlugin({
       lines.splice(i, 1);
     }
 
-    if (env === "ssr" && lines[i]?.trim().startsWith("throw ")) {
-      lines.splice(i, 1);
-    }
+    let result;
 
     if (env === "ssr") {
       const logLine = `console.log('######### reached ${filePath} for SSR');`;
       lines.splice(0, 0, logLine);
-      const finalCode = lines.join("\n");
-      return {
-        code: finalCode,
-        map: null,
-      };
+      result = lines.join("\n");
     } else if (env === "rsc") {
-      return {
-        code: `\
+      result = `\
 console.log('######### reached ${filePath} for RSC');\
-function __getID() { return ${JSON.stringify(filePath)}; }
-`,
-        map: null,
-      };
+export function __getID() { return ${JSON.stringify(filePath)}; }
+`;
     }
+
+    console.log("################## tryTransform() end", {
+      filePath,
+      env,
+      caller,
+      result,
+    });
+
+    return result;
   }
 
   return {
@@ -114,10 +129,11 @@ function __getID() { return ${JSON.stringify(filePath)}; }
       config.optimizeDeps.esbuildOptions.plugins.push({
         name: "use-client-esbuild-transform",
         setup(build) {
-          build.onLoad({ filter: /\.([cm]?[jt]sx?)$/ }, async (args) => {
+          build.onLoad({ filter: /.*/ }, async (args) => {
             const result = await tryTransform({
               filePath: args.path,
               env,
+              caller: "esbuild",
             });
 
             if (!result) {
@@ -125,9 +141,8 @@ function __getID() { return ${JSON.stringify(filePath)}; }
             }
 
             return {
-              contents: result.code,
+              contents: result,
               loader: path.extname(args.path).slice(1) as any,
-              sourcemap: result.map ?? null,
             };
           });
         },
@@ -139,6 +154,7 @@ function __getID() { return ${JSON.stringify(filePath)}; }
         filePath: id,
         code,
         env: this.environment.name,
+        caller: "vite",
       });
 
       if (!result) {
