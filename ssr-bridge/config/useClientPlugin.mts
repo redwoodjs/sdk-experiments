@@ -13,8 +13,6 @@ export const findFilesContainingUseClient = async ({
     absolute: true,
   });
 
-  console.log("####", files);
-
   const clientFiles: string[] = [];
 
   for (const file of files) {
