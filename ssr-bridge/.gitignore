@@ -1,0 +1,77 @@
+# Node modules
+/node_modules/**
+
+# But don't ignore test-dep-a and its contents
+!node_modules/test-dep-a/
+!node_modules/test-dep-a/**
+
+# But don't ignore test-dep-b and its contents
+!node_modules/test-dep-b/
+!node_modules/test-dep-b/**
+
+# Logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+.tmp/
+
+# Environment variables
+.env
+.dev.vars
+
+# Vite build output
+dist
+
+# TypeScript
+*.tsbuildinfo
+
+# IDEs and editors
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# MacOS
+.DS_Store
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional stylelint cache
+.stylelintcache
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# pnpm store directory
+.pnpm-store
+
+# dotenv environment variables file
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Vite cache
+.vite
+
+# Coverage directory used by tools like istanbul
+coverage
+
+# Temporary files
+*.tmp
+*.temp
+
+# Wrangler
+.wrangler
