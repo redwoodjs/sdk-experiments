@@ -84,19 +84,23 @@ export default async function useClientPlugin({
       lines.splice(i, 1);
     }
 
-    const logLine =
-      env === "rsc"
-        ? `console.log('######### reached ${filePath} for RSC');`
-        : `console.log('######### reached ${filePath} for SSR');`;
-
-    lines.splice(0, 0, logLine);
-
-    const finalCode = lines.join("\n");
-
-    return {
-      code: finalCode,
-      map: null,
-    };
+    if (env === "ssr") {
+      const logLine = `console.log('######### reached ${filePath} for SSR');`;
+      lines.splice(0, 0, logLine);
+      const finalCode = lines.join("\n");
+      return {
+        code: finalCode,
+        map: null,
+      };
+    } else if (env === "rsc") {
+      return {
+        code: `\
+console.log('######### reached ${filePath} for RSC');\
+function __getID() { return ${JSON.stringify(filePath)}; }
+`,
+        map: null,
+      };
+    }
   }
 
   return {
