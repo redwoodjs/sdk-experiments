@@ -1,7 +1,6 @@
 import { readFile } from "fs/promises";
 import { glob } from "glob";
 import path from "path";
-import MagicString from "magic-string";
 import type { Plugin } from "vite";
 
 export const findFilesContainingUseClient = async ({
@@ -9,10 +8,12 @@ export const findFilesContainingUseClient = async ({
 }: {
   cwd: string;
 }): Promise<string[]> => {
-  const files = await glob("**/*.{ts,tsx}", {
+  const files = await glob("**/*.{ts,tsx,js,jsx,mjs,mts}", {
     cwd,
     absolute: true,
   });
+
+  console.log("####", files);
 
   const clientFiles: string[] = [];
 
@@ -47,6 +48,11 @@ export default async function useClientPlugin({
 }: {
   projectRootDir: string;
 }): Promise<Plugin> {
+  console.log(
+    "####",
+    await findFilesContainingUseClient({ cwd: projectRootDir })
+  );
+
   const useClientFiles = new Set<string>(
     await findFilesContainingUseClient({ cwd: projectRootDir })
   );
