@@ -46,11 +46,6 @@ export default async function useClientPlugin({
 }: {
   projectRootDir: string;
 }): Promise<Plugin> {
-  console.log(
-    "####",
-    await findFilesContainingUseClient({ cwd: projectRootDir })
-  );
-
   const useClientFiles = new Set<string>(
     await findFilesContainingUseClient({ cwd: projectRootDir })
   );
@@ -106,9 +101,12 @@ export default async function useClientPlugin({
       lines.splice(0, 0, logLine);
       result = lines.join("\n");
     } else if (env === "rsc") {
+      const relativePath = path.relative(projectRootDir, filePath);
+      const normalizedPath = "/" + relativePath;
+
       result = `\
-console.log('######### reached ${filePath} for RSC');\
-export function __getID() { return ${JSON.stringify(filePath)}; }
+console.log('######### reached ${normalizedPath} for RSC');\
+export function __getID() { return ${JSON.stringify(normalizedPath)}; }
 `;
     }
 

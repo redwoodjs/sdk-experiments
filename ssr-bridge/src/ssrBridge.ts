@@ -5,6 +5,7 @@ export async function ssrTest(id: string) {
     "virtual:use-client-lookup" as string
   );
 
+  console.log("###### ssrTest(): useClientLookup", useClientLookup);
   const moduleFn = useClientLookup[id];
 
   if (!moduleFn) {
