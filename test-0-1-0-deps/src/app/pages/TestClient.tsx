@@ -7,8 +7,9 @@ export function TestClient() {
     <>
       <div>TestClient</div>
       <div>
-        <div>Used from another client component:</div>
+        Used from another client component: [start]
         <TestDepDualClientComponent />
+        [end]
       </div>
     </>
   );

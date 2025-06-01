@@ -8,8 +8,11 @@ export function Home({ ctx }: RequestInfo) {
     <div>
       <TestClient />
       <div>
-        Used directly from server component:
-        <TestDepDualClientComponent />
+        Used directly from server component: [start]
+        <div>
+          <TestDepDualClientComponent />
+        </div>
+        [end]
       </div>
     </div>
   );
