@@ -1,4 +1,5 @@
 "use client";
+import "test-dep-client-only";
 import { TestDepDualClientComponent } from "test-dep-dual";
 
 export function TestClient() {

@@ -1,5 +1,6 @@
 import { RequestInfo } from "rwsdk/worker";
 import { TestDepDualClientComponent } from "test-dep-dual";
+import "test-dep-react-server-only";
 import { TestClient } from "./TestClient";
 
 export function Home({ ctx }: RequestInfo) {
