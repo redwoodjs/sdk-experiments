@@ -1,4 +1,4 @@
-import "test-dep-a";
+import "test-dep-client-only";
 
 export async function ssrTest(id: string) {
   const { useClientLookup } = await import(
