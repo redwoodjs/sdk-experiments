@@ -8,7 +8,7 @@ export function TestClient() {
       <div>TestClient</div>
       <div>
         Used from another client component: [start]
-        <TestDepDualClientComponent />
+        <TestDepDualClientComponent isClientRoot={false} />
         [end]
       </div>
     </>

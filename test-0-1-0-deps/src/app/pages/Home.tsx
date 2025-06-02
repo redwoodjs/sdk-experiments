@@ -10,7 +10,7 @@ export function Home({ ctx }: RequestInfo) {
       <div>
         Used directly from server component: [start]
         <div>
-          <TestDepDualClientComponent />
+          <TestDepDualClientComponent isClientRoot={true} />
         </div>
         [end]
       </div>
