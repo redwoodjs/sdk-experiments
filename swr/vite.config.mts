@@ -3,9 +3,7 @@ import { redwood } from "rwsdk/vite";
 
 export default defineConfig({
   resolve: {
-    alias: {
-      swr: import.meta.resolve("swr"),
-    },
+    alias: {},
   },
   plugins: [redwood()],
 });
