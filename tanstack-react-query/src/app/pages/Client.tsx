@@ -1,33 +1,25 @@
 "use client";
 
-import {
-  QueryClient,
-  QueryClientProvider,
-  useQuery,
-} from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchTodo } from "../shared/queries";
 
-const queryClient = new QueryClient();
+export const Client = () => {
+  const queryClient = useQueryClient();
 
-interface Todo {
-  id: number;
-  title: string;
-  completed: boolean;
-  userId: number;
-}
-
-function TodoExample() {
-  const { data, isLoading, error } = useQuery<Todo>({
-    queryKey: ["todo"],
-    queryFn: async () => {
-      const response = await fetch(
-        "https://jsonplaceholder.typicode.com/todos/1"
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch todo");
-      }
-      return response.json();
-    },
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ["todo", 1],
+    queryFn: () => fetchTodo("CLIENT", 1),
   });
+
+  const handleRefetch = () => {
+    console.log("[CLIENT] User clicked refetch button");
+    refetch();
+  };
+
+  const handleInvalidateAndRefetch = () => {
+    console.log("[CLIENT] User clicked invalidate and refetch");
+    queryClient.invalidateQueries({ queryKey: ["todo", 1] });
+  };
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
@@ -35,19 +27,29 @@ function TodoExample() {
   return (
     <div>
       <h2>React Query Example</h2>
-      <p>Todo ID: {data?.id}</p>
-      <p>Title: {data?.title}</p>
-      <p>Completed: {data?.completed ? "Yes" : "No"}</p>
-    </div>
-  );
-}
-
-export const Client = () => {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <div>
-        <TodoExample />
+      <div style={{ marginBottom: "20px" }}>
+        <h3>Todo Data (Server Prefetched, Client Updated):</h3>
+        <p>Todo ID: {data?.id}</p>
+        <p>Title: {data?.title}</p>
+        <p>Completed: {data?.completed ? "Yes" : "No"}</p>
       </div>
-    </QueryClientProvider>
+
+      <div style={{ marginBottom: "20px" }}>
+        <h3>Actions (check console for client-side fetches):</h3>
+        <button
+          onClick={handleRefetch}
+          style={{ marginRight: "10px", padding: "8px 16px" }}
+        >
+          Refetch Data
+        </button>
+
+        <button
+          onClick={handleInvalidateAndRefetch}
+          style={{ padding: "8px 16px" }}
+        >
+          Invalidate & Refetch
+        </button>
+      </div>
+    </div>
   );
 };

@@ -1,0 +1,54 @@
+"use client";
+
+import {
+  QueryClient,
+  QueryClientProvider,
+  HydrationBoundary,
+  isServer,
+} from "@tanstack/react-query";
+import { ReactNode } from "react";
+
+function makeQueryClient() {
+  return new QueryClient({
+    defaultOptions: {
+      queries: {
+        // With SSR, we usually want to set some default staleTime
+        // above 0 to avoid refetching immediately on the client
+        staleTime: 60 * 1000,
+      },
+    },
+  });
+}
+
+let browserQueryClient: QueryClient | undefined = undefined;
+
+function getQueryClient() {
+  if (isServer) {
+    console.log("[SERVER] Providers: Creating new query client");
+    // Server: always make a new query client
+    return makeQueryClient();
+  } else {
+    console.log("[BROWSER] Providers: Creating new query client");
+    // Browser: make a new query client if we don't already have one
+    // This is very important, so we don't re-make a new client if React
+    // suspends during the initial render. This may not be needed if we
+    // have a suspense boundary BELOW the creation of the query client
+    if (!browserQueryClient) browserQueryClient = makeQueryClient();
+    return browserQueryClient;
+  }
+}
+
+interface ProvidersProps {
+  children: ReactNode;
+  dehydratedState?: unknown;
+}
+
+export function Providers({ children, dehydratedState }: ProvidersProps) {
+  const queryClient = getQueryClient();
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <HydrationBoundary state={dehydratedState}>{children}</HydrationBoundary>
+    </QueryClientProvider>
+  );
+}
