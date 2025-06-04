@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       rwsdk:
-        specifier: 0.0.87-test.20250602013216
-        version: 0.0.87-test.20250602013216(rollup@4.41.1)(typescript@5.8.3)(vite@6.3.5(@types/node@22.15.29)(terser@5.40.0))(webpack@5.99.9)(workerd@1.20250525.0)
+        specifier: 0.1.0-alpha.0
+        version: 0.1.0-alpha.0(rollup@4.41.1)(typescript@5.8.3)(vite@6.3.5(@types/node@22.15.29)(terser@5.40.0))(webpack@5.99.9)(workerd@1.20250525.0)
     devDependencies:
       '@types/node':
         specifier: ^22.14.0
@@ -1040,6 +1040,10 @@ packages:
     resolution: {integrity: sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA==}
     engines: {node: '>=10'}
 
+  chokidar@4.0.3:
+    resolution: {integrity: sha512-Qgzu8kfBvo+cA4962jnP1KkS6Dop5NS6g7R5LFYJr4b8Ub94PPQXUksCw9PvXoeXPRRddRNC5C1JQUR2SMGtnA==}
+    engines: {node: '>= 14.16.0'}
+
   chrome-trace-event@1.0.4:
     resolution: {integrity: sha512-rNjApaLzuwaOTjCiT8lSDdGN1APCiqkChLMJxJPWLunPAt5fy8xgU9/jNOchV84wfIxrA0lRQB7oCT8jrn/wrQ==}
     engines: {node: '>=6.0'}
@@ -1619,6 +1623,10 @@ packages:
     resolution: {integrity: sha512-F6Iiuc7rXFtMZpCYM7rjJUSc8ee2xJV2+1s47xYR29U7e3Z5ztSplpEy559zeTEol1nHIxNTRvyFwVjmyEXnUA==}
     engines: {node: '>=0.10.0'}
 
+  readdirp@4.1.2:
+    resolution: {integrity: sha512-GDhwkLfywWL2s6vEjyhri+eXmfH6j1L7JE27WhqLeYzoh/A3DBaYGEj2H/HFZCn/kMfim73FXxEJTw06WtxQwg==}
+    engines: {node: '>= 14.18.0'}
+
   require-directory@2.1.1:
     resolution: {integrity: sha512-fGxEI7+wsG9xrvdjsrlmL22OMTTiHRwAMroiEeMgq8gzoLC/PQr7RsRDSTLUg/bZAZtF+TVIkHc6/4RIKrui+Q==}
     engines: {node: '>=0.10.0'}
@@ -1642,8 +1650,8 @@ packages:
   run-parallel@1.2.0:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
 
-  rwsdk@0.0.87-test.20250602013216:
-    resolution: {integrity: sha512-IimA9fJ73hBF014AloXbR7qz7ckHw/3/L4Wwqak3tvTE21z4DZEiceMjsgYZZOMRQ59/LfaNcMpuj0jtGXB2dQ==}
+  rwsdk@0.1.0-alpha.0:
+    resolution: {integrity: sha512-gGjDewAjHYz+ZILKt1eb4nXPuHX8HbV6lldmQo7WWvB+8A89UpUPnJ1a0Dq3ZM77ArZ8WXShnEJzLlwHTFlMuQ==}
     hasBin: true
     peerDependencies:
       vite: ^6.2.6
@@ -2876,6 +2884,10 @@ snapshots:
       ansi-styles: 4.3.0
       supports-color: 7.2.0
 
+  chokidar@4.0.3:
+    dependencies:
+      readdirp: 4.1.2
+
   chrome-trace-event@1.0.4: {}
 
   chromium-bidi@0.6.3(devtools-protocol@0.0.1312386):
@@ -3478,6 +3490,8 @@ snapshots:
 
   react@19.2.0-canary-39cad7af-20250411: {}
 
+  readdirp@4.1.2: {}
+
   require-directory@2.1.1: {}
 
   require-from-string@2.0.2: {}
@@ -3516,7 +3530,7 @@ snapshots:
     dependencies:
       queue-microtask: 1.2.3
 
-  rwsdk@0.0.87-test.20250602013216(rollup@4.41.1)(typescript@5.8.3)(vite@6.3.5(@types/node@22.15.29)(terser@5.40.0))(webpack@5.99.9)(workerd@1.20250525.0):
+  rwsdk@0.1.0-alpha.0(rollup@4.41.1)(typescript@5.8.3)(vite@6.3.5(@types/node@22.15.29)(terser@5.40.0))(webpack@5.99.9)(workerd@1.20250525.0):
     dependencies:
       '@cloudflare/vite-plugin': 0.0.0-1bae8618b(rollup@4.41.1)(vite@6.3.5(@types/node@22.15.29)(terser@5.40.0))(workerd@1.20250525.0)(wrangler@4.18.0(@cloudflare/workers-types@4.20250601.0))
       '@cloudflare/workers-types': 4.20250601.0
@@ -3526,6 +3540,7 @@ snapshots:
       '@types/react-dom': 19.1.5(@types/react@19.1.6)
       '@types/react-is': 19.0.0
       '@vitejs/plugin-react': 4.5.0(vite@6.3.5(@types/node@22.15.29)(terser@5.40.0))
+      chokidar: 4.0.3
       debug: 4.4.1
       enhanced-resolve: 5.18.1
       eventsource-parser: 3.0.2
