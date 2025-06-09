@@ -17,6 +17,16 @@
     "binding": "ASSETS"
   },
 
+  // Durable Objects configuration
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "PASSKEY_DURABLE_OBJECT",
+        "class_name": "PasskeyDurableObject"
+      }
+    ]
+  },
+
   // Observability settings
   "observability": {
     "enabled": true
@@ -24,6 +34,14 @@
 
   // Environment variables
   "vars": {
-    // Add your environment variables here
-  }
+    "WEBAUTHN_APP_NAME": "__change_me__"
+  },
+
+  // Migrations
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["PasskeyDurableObject"]
+    }
+  ]
 }
