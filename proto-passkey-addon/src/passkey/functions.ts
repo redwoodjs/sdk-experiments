@@ -19,7 +19,7 @@ import {
   getCredentialById,
   updateCredentialCounter,
 } from "./database.js";
-import debug from "debug";
+import debug from "../sdk/logger.js";
 
 const log = debug("passkey:functions");
 
@@ -117,7 +117,10 @@ export async function startPasskeyRegistration(username: string) {
     },
   });
 
-  log("Generated registration options with challenge: %s", options.challenge);
+  log(
+    "Generated registration options with challenge: %s",
+    options.challenge
+  );
   await saveSession(headers, { challenge: options.challenge });
 
   log("Registration options ready for username: %s", username);
@@ -137,7 +140,10 @@ export async function startPasskeyLogin() {
     allowCredentials: [],
   });
 
-  log("Generated authentication options with challenge: %s", options.challenge);
+  log(
+    "Generated authentication options with challenge: %s",
+    options.challenge
+  );
   await saveSession(headers, { challenge: options.challenge });
 
   log("Authentication options ready");
@@ -208,7 +214,10 @@ export async function finishPasskeyRegistration(
 export async function finishPasskeyLogin(
   authentication: AuthenticationResponseJSON
 ) {
-  log("Finishing passkey login for credential ID: %s", authentication.id);
+  log(
+    "Finishing passkey login for credential ID: %s",
+    authentication.id
+  );
 
   const { request, headers } = requestInfo;
   const { origin } = new URL(request.url);
@@ -230,7 +239,10 @@ export async function finishPasskeyLogin(
     const credential = await getCredentialById(db, authentication.id);
 
     if (!credential) {
-      log("ERROR: Credential not found in database: %s", authentication.id);
+      log(
+        "ERROR: Credential not found in database: %s",
+        authentication.id
+      );
       return false;
     }
 

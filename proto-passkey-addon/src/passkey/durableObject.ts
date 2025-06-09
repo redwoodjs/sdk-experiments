@@ -1,7 +1,7 @@
 import { Kysely } from "kysely";
 import { createDb, initializeDb, Database } from "./database.js";
 import { DurableObject } from "cloudflare:workers";
-import debug from "debug";
+import debug from "../sdk/logger.js";
 
 const log = debug("passkey:do");
 

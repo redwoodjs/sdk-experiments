@@ -1,12 +1,11 @@
 import { defineApp } from "rwsdk/worker";
 import { index, render, route, prefix } from "rwsdk/router";
 import { env } from "cloudflare:workers";
-import debug from "debug";
-
 import { Document } from "@/app/Document";
 import { Home } from "@/app/pages/Home";
 import { setCommonHeaders } from "@/app/headers";
 import { authRoutes } from "@/passkey";
+import debug from "./sdk/logger.js";
 
 const log = debug("passkey:worker");
 

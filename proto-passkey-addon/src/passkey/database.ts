@@ -2,7 +2,7 @@ import { Kysely } from "kysely";
 import { DODialect } from "kysely-do";
 import { Migration } from "kysely";
 import { createMigrator } from "../sdk";
-import debug from "debug";
+import debug from "../sdk/logger.js";
 
 const log = debug("passkey:database");
 
@@ -217,6 +217,10 @@ export async function getUserCredentials(
     .where("userId", "=", userId)
     .execute();
 
-  log("Found %d credentials for user: %s", credentials.length, userId);
+  log(
+    "Found %d credentials for user: %s",
+    credentials.length,
+    userId
+  );
   return credentials;
 }

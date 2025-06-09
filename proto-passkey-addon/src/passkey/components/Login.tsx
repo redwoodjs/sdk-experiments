@@ -11,7 +11,7 @@ import {
   startPasskeyLogin,
   startPasskeyRegistration,
 } from "../functions";
-import debug from "debug";
+import debug from "../../sdk/logger.js";
 
 const log = debug("passkey:login-component");
 
@@ -29,7 +29,9 @@ export function Login() {
       // 1. Get a challenge from the worker
       log("Step 1: Getting challenge from worker");
       const options = await startPasskeyLogin();
-      log("Received login options: %o", { challenge: options.challenge });
+      log("Received login options: %o", {
+        challenge: options.challenge,
+      });
 
       // 2. Ask the browser to sign the challenge
       log("Step 2: Starting browser authentication");
@@ -62,7 +64,10 @@ export function Login() {
   };
 
   const passkeyRegister = async () => {
-    log("Starting passkey registration flow for username: %s", username);
+    log(
+      "Starting passkey registration flow for username: %s",
+      username
+    );
 
     if (!username.trim()) {
       log("ERROR: Username is empty");
@@ -90,7 +95,10 @@ export function Login() {
       // 3. Give the signed challenge to the worker to finish the registration process
       log("Step 3: Finishing registration with worker");
       const success = await finishPasskeyRegistration(username, registration);
-      log("Registration result: %s", success ? "success" : "failed");
+      log(
+        "Registration result: %s",
+        success ? "success" : "failed"
+      );
 
       if (!success) {
         log("Registration failed - setting error result");
