@@ -36,46 +36,27 @@ export async function setupDb() {
   db = await durableObjectStub.getDb();
 }
 
-export async function createUser(
-  db: Kysely<Database>,
-  username: string
-): Promise<User> {
-  log("Creating user with username: %s", username);
-
+export async function createUser(username: string): Promise<User> {
   const user: User = {
     id: crypto.randomUUID(),
     username,
     createdAt: new Date().toISOString(),
   };
 
-  log("Inserting user into database: %o", {
-    id: user.id,
-    username: user.username,
-  });
   await db.insertInto("users").values(user).execute();
 
-  log("User created successfully: %s", user.id);
   return user;
 }
 
-export async function getUserByUsername(
-  db: Kysely<Database>,
-  username: string
-): Promise<User | null> {
-  log("Looking up user by username: %s", username);
-
-  const result = await db
+export async function getUserById(id: string): Promise<User | undefined> {
+  return await db
     .selectFrom("users")
     .selectAll()
-    .where("username", "=", username)
+    .where("id", "=", id)
     .executeTakeFirst();
-
-  log("User lookup result: %s", result ? "found" : "not found");
-  return result || null;
 }
 
 export async function createCredential(
-  db: Kysely<Database>,
   credential: Omit<Credential, "id" | "createdAt">
 ): Promise<Credential> {
   log("Creating credential for user: %s", credential.userId);
@@ -98,49 +79,32 @@ export async function createCredential(
 }
 
 export async function getCredentialById(
-  db: Kysely<Database>,
   credentialId: string
-): Promise<Credential | null> {
-  log("Looking up credential by ID: %s", credentialId);
-
-  const result = await db
+): Promise<Credential | undefined> {
+  return await db
     .selectFrom("credentials")
     .selectAll()
     .where("credentialId", "=", credentialId)
     .executeTakeFirst();
-
-  log("Credential lookup result: %s", result ? "found" : "not found");
-  return result || null;
 }
 
 export async function updateCredentialCounter(
-  db: Kysely<Database>,
   credentialId: string,
   counter: number
 ): Promise<void> {
-  log("Updating credential counter: %s -> %d", credentialId, counter);
-
   await db
     .updateTable("credentials")
     .set({ counter })
     .where("credentialId", "=", credentialId)
     .execute();
-
-  log("Credential counter updated successfully");
 }
 
 export async function getUserCredentials(
-  db: Kysely<Database>,
   userId: string
 ): Promise<Credential[]> {
-  log("Getting all credentials for user: %s", userId);
-
-  const credentials = await db
+  return await db
     .selectFrom("credentials")
     .selectAll()
     .where("userId", "=", userId)
     .execute();
-
-  log("Found %d credentials for user: %s", credentials.length, userId);
-  return credentials;
 }

@@ -6,8 +6,7 @@ import { Home } from "@/app/pages/Home";
 import { setCommonHeaders } from "@/app/headers";
 import { authRoutes, User } from "@/passkey";
 import debug from "./sdk/logger.js";
-import { setupPasskeysDb } from "./passkey/db/setup";
-import { sessions } from "./session/store";
+import { setupPasskeyAuth } from "./passkey/setup";
 import { Session } from "./session/durableObject";
 
 export { SessionDurableObject } from "./session/durableObject";
@@ -21,24 +20,6 @@ export type AppContext = {
 
 export default defineApp([
   setCommonHeaders(),
-  async ({ ctx, request, headers }) => {
-    await setupPasskeys();
-
-    try {
-      ctx.session = await sessions.load(request);
-    } catch (error) {
-      if (error instanceof ErrorResponse && error.code === 401) {
-        await sessions.remove(request, headers);
-        headers.set("Location", "/user/login");
-
-        return new Response(null, {
-          status: 302,
-          headers,
-        });
-      }
-
-      throw error;
-    }
-  },
+  setupPasskeyAuth(),
   render(Document, [index([Home]), prefix("/auth", authRoutes())]),
 ]);
