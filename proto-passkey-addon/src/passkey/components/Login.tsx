@@ -64,10 +64,7 @@ export function Login() {
   };
 
   const passkeyRegister = async () => {
-    log(
-      "Starting passkey registration flow for username: %s",
-      username
-    );
+    log("Starting passkey registration flow for username: %s", username);
 
     if (!username.trim()) {
       log("ERROR: Username is empty");
@@ -95,10 +92,7 @@ export function Login() {
       // 3. Give the signed challenge to the worker to finish the registration process
       log("Step 3: Finishing registration with worker");
       const success = await finishPasskeyRegistration(username, registration);
-      log(
-        "Registration result: %s",
-        success ? "success" : "failed"
-      );
+      log("Registration result: %s", success ? "success" : "failed");
 
       if (!success) {
         log("Registration failed - setting error result");

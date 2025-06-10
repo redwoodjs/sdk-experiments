@@ -217,10 +217,6 @@ export async function getUserCredentials(
     .where("userId", "=", userId)
     .execute();
 
-  log(
-    "Found %d credentials for user: %s",
-    credentials.length,
-    userId
-  );
+  log("Found %d credentials for user: %s", credentials.length, userId);
   return credentials;
 }
