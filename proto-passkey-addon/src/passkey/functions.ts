@@ -84,7 +84,7 @@ export async function finishPasskeyRegistration(
     response: registration,
     expectedChallenge: challenge,
     expectedOrigin: origin,
-    expectedRPID: env.WEBAUTHN_RP_ID || new URL(request.url).hostname,
+    expectedRPID: (env as any).WEBAUTHN_RP_ID || new URL(request.url).hostname,
   });
 
   if (!verification.verified || !verification.registrationInfo) {
@@ -126,7 +126,7 @@ export async function finishPasskeyLogin(login: AuthenticationResponseJSON) {
     response: login,
     expectedChallenge: challenge,
     expectedOrigin: origin,
-    expectedRPID: env.WEBAUTHN_RP_ID || new URL(request.url).hostname,
+    expectedRPID: (env as any).WEBAUTHN_RP_ID || new URL(request.url).hostname,
     requireUserVerification: false,
     credential: {
       id: credential.credentialId,
