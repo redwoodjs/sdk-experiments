@@ -1,6 +1,7 @@
 import { Kysely } from "kysely";
 import debug from "../../sdk/logger.js";
 import { env } from "cloudflare:workers";
+import { createDb } from "../durableObject";
 
 const log = debug("passkey:db");
 
@@ -33,7 +34,8 @@ export async function setupDb() {
 
   const durableObjectId = env.PASSKEY_DURABLE_OBJECT.idFromName("passkey-main");
   const durableObjectStub = env.PASSKEY_DURABLE_OBJECT.get(durableObjectId);
-  db = await durableObjectStub.getDb();
+  const ctx = durableObjectStub.ctx;
+  db = createDb(ctx);
 }
 
 export async function createUser(username: string): Promise<User> {

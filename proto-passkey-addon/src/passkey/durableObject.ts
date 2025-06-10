@@ -11,14 +11,16 @@ const log = debug("passkey:do");
 export class PasskeyDurableObject extends DurableObject {
   private db: Kysely<Database>;
   private initialized = false;
+  public ctx: DurableObjectState;
 
-  constructor(state: any, env: any) {
+  constructor(ctx: DurableObjectState, env: any) {
     log(
       "PasskeyDurableObject constructor called with state id: %s",
-      state.id.toString()
+      ctx.id.toString()
     );
-    super(state, env);
-    this.db = createDb(state);
+    super(ctx, env);
+    this.db = createDb(ctx);
+    this.ctx = ctx;
     log("Database instance created");
   }
 
@@ -33,18 +35,6 @@ export class PasskeyDurableObject extends DurableObject {
     this.initialized = true;
     log("Database initialization complete");
   }
-
-  async getDb(): Promise<Kysely<Database>> {
-    log("getDb() called - returning database instance");
-    await this.ensureInitialized();
-    return this.db;
-  }
-
-  private async ensureInitialized() {
-    if (!this.initialized) {
-      await this.initialize();
-    }
-  }
 }
 
 export async function initializeDb(db: Kysely<Database>): Promise<void> {
@@ -52,10 +42,10 @@ export async function initializeDb(db: Kysely<Database>): Promise<void> {
   await migrator.migrateToLatest();
 }
 
-export const createDb = (durableObjectState: any): Kysely<Database> => {
+export const createDb = (ctx: DurableObjectState): Kysely<Database> => {
   return new Kysely<Database>({
     dialect: new DODialect({
-      ctx: durableObjectState,
+      ctx,
     }),
   });
 };

@@ -22,8 +22,8 @@ import {
 const IS_DEV = process.env.NODE_ENV === "development";
 
 function getWebAuthnConfig(request: Request) {
-  const rpID = env.WEBAUTHN_RP_ID ?? new URL(request.url).hostname;
-  const rpName = IS_DEV ? "Development App" : env.WEBAUTHN_APP_NAME;
+  const rpID = (env as any).WEBAUTHN_RP_ID ?? new URL(request.url).hostname;
+  const rpName = IS_DEV ? "Development App" : (env as any).WEBAUTHN_APP_NAME;
   return {
     rpName,
     rpID,
