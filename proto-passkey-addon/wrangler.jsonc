@@ -21,6 +21,10 @@
   "durable_objects": {
     "bindings": [
       {
+        "name": "SESSION_DURABLE_OBJECT",
+        "class_name": "SessionDurableObject"
+      },
+      {
         "name": "PASSKEY_DURABLE_OBJECT",
         "class_name": "PasskeyDurableObject"
       }

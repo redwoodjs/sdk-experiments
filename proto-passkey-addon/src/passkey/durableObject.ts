@@ -1,7 +1,10 @@
 import { Kysely } from "kysely";
-import { createDb, initializeDb, Database } from "./database.js";
+import { DODialect } from "kysely-do";
 import { DurableObject } from "cloudflare:workers";
-import debug from "../sdk/logger.js";
+import debug from "@/sdk/logger.js";
+import { Database } from "./db/db";
+import { createMigrator } from "@/sdk";
+import { migrations } from "./db/migrations";
 
 const log = debug("passkey:do");
 
@@ -43,3 +46,16 @@ export class PasskeyDurableObject extends DurableObject {
     }
   }
 }
+
+export async function initializeDb(db: Kysely<Database>): Promise<void> {
+  const migrator = createMigrator(db, migrations, "__passkey_migrations");
+  await migrator.migrateToLatest();
+}
+
+export const createDb = (durableObjectState: any): Kysely<Database> => {
+  return new Kysely<Database>({
+    dialect: new DODialect({
+      ctx: durableObjectState,
+    }),
+  });
+};

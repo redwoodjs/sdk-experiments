@@ -1,4 +1,4 @@
-export * from "./database.js";
+export * from "./db";
 export * from "./functions.js";
 export * from "./components/Login.js";
 export * from "./durableObject.js";

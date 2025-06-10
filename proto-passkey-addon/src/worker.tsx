@@ -1,59 +1,44 @@
-import { defineApp } from "rwsdk/worker";
+import { defineApp, ErrorResponse } from "rwsdk/worker";
 import { index, render, route, prefix } from "rwsdk/router";
 import { env } from "cloudflare:workers";
 import { Document } from "@/app/Document";
 import { Home } from "@/app/pages/Home";
 import { setCommonHeaders } from "@/app/headers";
-import { authRoutes } from "@/passkey";
+import { authRoutes, User } from "@/passkey";
 import debug from "./sdk/logger.js";
+import { setupPasskeysDb } from "./passkey/db/setup";
+import { sessions } from "./session/store";
+import { Session } from "./session/durableObject";
+
+export { SessionDurableObject } from "./session/durableObject";
+export { PasskeyDurableObject } from "@/passkey/durableObject";
 
 const log = debug("passkey:worker");
 
-export type AppContext = {};
-
-// Initialize the passkey durable object
-async function initializePasskeyDurableObject() {
-  log("Initializing Passkey Durable Object");
-
-  if (!env.PASSKEY_DURABLE_OBJECT) {
-    log("ERROR: PASSKEY_DURABLE_OBJECT not found in environment");
-    throw new Error("PASSKEY_DURABLE_OBJECT binding not found in environment");
-  }
-
-  try {
-    // Create a unique ID for the durable object instance
-    const durableObjectId =
-      env.PASSKEY_DURABLE_OBJECT.idFromName("passkey-main");
-    log("Created durable object ID: %s", durableObjectId.toString());
-
-    // Get the durable object stub
-    const durableObjectStub = env.PASSKEY_DURABLE_OBJECT.get(durableObjectId);
-    log("Got durable object stub");
-
-    // Initialize the durable object database directly via RPC
-    log("Calling initialize() on durable object");
-    await durableObjectStub.initialize();
-    log("Passkey Durable Object initialized successfully");
-  } catch (error) {
-    log("ERROR during durable object initialization: %o", error);
-    // Don't throw here - let the app start even if DO initialization fails
-    // The functions will handle the error when they try to use the database
-  }
-}
+export type AppContext = {
+  session: Session | null;
+};
 
 export default defineApp([
   setCommonHeaders(),
-  async ({ ctx }) => {
-    log("Worker middleware executing");
+  async ({ ctx, request, headers }) => {
+    await setupPasskeys();
 
-    // Initialize the passkey durable object on startup
-    await initializePasskeyDurableObject();
+    try {
+      ctx.session = await sessions.load(request);
+    } catch (error) {
+      if (error instanceof ErrorResponse && error.code === 401) {
+        await sessions.remove(request, headers);
+        headers.set("Location", "/user/login");
 
-    // setup ctx here
-    ctx;
-    log("Worker middleware completed");
+        return new Response(null, {
+          status: 302,
+          headers,
+        });
+      }
+
+      throw error;
+    }
   },
   render(Document, [index([Home]), prefix("/auth", authRoutes())]),
 ]);
-
-export { PasskeyDurableObject } from "@/passkey/durableObject";

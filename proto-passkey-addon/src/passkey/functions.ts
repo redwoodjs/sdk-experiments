@@ -18,8 +18,8 @@ import {
   createCredential,
   getCredentialById,
   updateCredentialCounter,
-} from "./database.js";
-import debug from "../sdk/logger.js";
+} from "./db";
+import debug from "@/sdk/logger.js";
 
 const log = debug("passkey:functions");
 
@@ -29,7 +29,7 @@ function getWebAuthnConfig(request: Request) {
   const rpID = process.env.WEBAUTHN_RP_ID ?? new URL(request.url).hostname;
   const rpName = IS_DEV
     ? "Development App"
-    : process.env.WEBAUTHN_APP_NAME || "Passkey App";
+    : process.env.WEBAUTHN_RP_NAME ?? "Development App";
   log("WebAuthn config: rpID=%s, rpName=%s", rpID, rpName);
   return {
     rpName,

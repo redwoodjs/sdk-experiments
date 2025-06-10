@@ -1,12 +1,9 @@
 import { Kysely } from "kysely";
-import { DODialect } from "kysely-do";
-import { Migration } from "kysely";
-import { createMigrator } from "../sdk";
-import debug from "../sdk/logger.js";
+import debug from "../../sdk/logger.js";
+import { env } from "cloudflare:workers";
 
-const log = debug("passkey:database");
+const log = debug("passkey:db");
 
-// Database schema types
 export interface User {
   id: string;
   username: string;
@@ -27,89 +24,16 @@ export interface Database {
   credentials: Credential;
 }
 
-// Migrations
-export const migrations: Record<string, Migration> = {
-  "001_initial_schema": {
-    async up(db: Kysely<any>) {
-      log("Running migration: 001_initial_schema UP");
+export let db: Kysely<Database>;
 
-      log("Creating users table");
-      await db.schema
-        .createTable("users")
-        .addColumn("id", "text", (col) => col.primaryKey())
-        .addColumn("username", "text", (col) => col.notNull().unique())
-        .addColumn("createdAt", "text", (col) => col.notNull())
-        .execute();
-
-      log("Creating credentials table");
-      await db.schema
-        .createTable("credentials")
-        .addColumn("id", "text", (col) => col.primaryKey())
-        .addColumn("userId", "text", (col) => col.notNull())
-        .addColumn("createdAt", "text", (col) => col.notNull())
-        .addColumn("credentialId", "text", (col) => col.notNull().unique())
-        .addColumn("publicKey", "blob", (col) => col.notNull())
-        .addColumn("counter", "integer", (col) => col.notNull().defaultTo(0))
-        .execute();
-
-      log("Creating credentials_userId_idx index");
-      await db.schema
-        .createIndex("credentials_userId_idx")
-        .on("credentials")
-        .column("userId")
-        .execute();
-
-      log("Creating credentials_credentialId_idx index");
-      await db.schema
-        .createIndex("credentials_credentialId_idx")
-        .on("credentials")
-        .column("credentialId")
-        .execute();
-
-      // Add foreign key constraint
-      log("Adding foreign key constraint");
-      await db.schema
-        .alterTable("credentials")
-        .addForeignKeyConstraint(
-          "credentials_userId_fkey",
-          ["userId"],
-          "users",
-          ["id"]
-        )
-        .onDelete("cascade")
-        .execute();
-
-      log("Migration 001_initial_schema completed successfully");
-    },
-
-    async down(db: Kysely<any>) {
-      log("Running migration: 001_initial_schema DOWN");
-      await db.schema.dropTable("credentials").execute();
-      await db.schema.dropTable("users").execute();
-      log("Migration 001_initial_schema rollback completed");
-    },
-  },
-};
-
-// Static database functions for passkey auth
-export function createDb(durableObjectState: any): Kysely<Database> {
-  log("Creating database instance with DODialect");
-  return new Kysely<Database>({
-    dialect: new DODialect({
-      ctx: durableObjectState,
-    }),
-  });
-}
-
-export async function initializeDb(db: Kysely<Database>): Promise<void> {
-  log("Initializing database with migrations");
-  const migrator = createMigrator(db, migrations, "__passkey_migrations");
-  const result = await migrator.migrateToLatest();
-  if (result.error) {
-    log("ERROR: Migration failed: %o", result.error);
-    throw new Error(`Failed to run migrations: ${result.error}`);
+export async function setupDb() {
+  if (!env.PASSKEY_DURABLE_OBJECT) {
+    throw new Error("PASSKEY_DURABLE_OBJECT binding not found in environment");
   }
-  log("Database initialization completed successfully");
+
+  const durableObjectId = env.PASSKEY_DURABLE_OBJECT.idFromName("passkey-main");
+  const durableObjectStub = env.PASSKEY_DURABLE_OBJECT.get(durableObjectId);
+  db = await durableObjectStub.getDb();
 }
 
 export async function createUser(
