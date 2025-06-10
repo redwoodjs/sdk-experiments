@@ -21,5 +21,18 @@ export type AppContext = {
 export default defineApp([
   setCommonHeaders(),
   setupPasskeyAuth(),
-  render(Document, [index([Home]), prefix("/auth", authRoutes())]),
+  render(Document, [
+    index([
+      ({ ctx }) => {
+        if (!ctx.session?.userId) {
+          return new Response(null, {
+            status: 302,
+            headers: { Location: "/auth/login" },
+          });
+        }
+      },
+      Home,
+    ]),
+    prefix("/auth", authRoutes()),
+  ]),
 ]);
