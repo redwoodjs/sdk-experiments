@@ -13,7 +13,7 @@ export function setupPasskeyAuth() {
     } catch (error) {
       if (error instanceof ErrorResponse && error.code === 401) {
         await sessions.remove(request, headers);
-        headers.set("Location", "/user/login");
+        headers.set("Location", "/auth/login");
 
         throw new Response(null, {
           status: 302,
