@@ -1,11 +1,4 @@
-import {
-  Kysely,
-  Driver,
-  DatabaseConnection,
-  SqliteDialect,
-  CompiledQuery,
-  QueryResult,
-} from "kysely";
+import { Kysely, CompiledQuery, QueryResult } from "kysely";
 import { DODialect } from "kysely-do";
 import { createMigrator } from "./index.js";
 import debug from "./logger.js";
@@ -75,56 +68,27 @@ export class DurableObjectDbWrapper<T> {
   }
 }
 
-// Custom driver for worker side that forwards to Durable Object
-class DurableObjectProxyDriver implements Driver {
-  constructor(private stub: { db: DurableObjectDbWrapper<any> }) {}
+// Create a fake ctx object that forwards to the DO
+function createProxyCtx(stub: { db: DurableObjectDbWrapper<any> }) {
+  return {
+    storage: {
+      sql: {
+        exec: async (sql: string, ...parameters: unknown[]) => {
+          log("Forwarding SQL to Durable Object: %s", sql);
+          const result = await stub.db.executeQuery({
+            sql,
+            parameters,
+          });
 
-  async acquireConnection(): Promise<DatabaseConnection> {
-    return new DurableObjectProxyConnection(this.stub);
-  }
-
-  async init(): Promise<void> {
-    // Nothing to initialize on worker side
-  }
-
-  async beginTransaction(): Promise<void> {
-    // Transactions are handled by the DO
-  }
-
-  async commitTransaction(): Promise<void> {
-    // Transactions are handled by the DO
-  }
-
-  async rollbackTransaction(): Promise<void> {
-    // Transactions are handled by the DO
-  }
-
-  async releaseConnection(): Promise<void> {
-    // Nothing to release
-  }
-
-  async destroy(): Promise<void> {
-    // Nothing to destroy
-  }
-}
-
-// Custom connection that forwards executeQuery to the DO
-class DurableObjectProxyConnection implements DatabaseConnection {
-  constructor(private stub: { db: DurableObjectDbWrapper<any> }) {}
-
-  async executeQuery<R>(
-    compiledQuery: CompiledQuery<unknown>
-  ): Promise<QueryResult<R>> {
-    log("Forwarding query to Durable Object: %s", compiledQuery.sql);
-    return await this.stub.db.executeQuery<R>({
-      sql: compiledQuery.sql,
-      parameters: compiledQuery.parameters,
-    });
-  }
-
-  async *streamQuery(): AsyncIterableIterator<any> {
-    throw new Error("Streaming not supported");
-  }
+          // Convert QueryResult to the format expected by DODialect
+          return {
+            toArray: () => result.rows,
+            rowsWritten: Number(result.numAffectedRows || 0),
+          };
+        },
+      },
+    },
+  };
 }
 
 export function createDurableObjectDb<T>(
@@ -134,9 +98,10 @@ export function createDurableObjectDb<T>(
   const durableObjectId = durableObjectBinding.idFromName(name);
   const stub = durableObjectBinding.get(durableObjectId);
 
+  // Create a fake ctx that forwards to the DO
+  const proxyCtx = createProxyCtx(stub);
+
   return new Kysely<T>({
-    dialect: new SqliteDialect({
-      database: new DurableObjectProxyDriver(stub) as any,
-    }),
+    dialect: new DODialect({ ctx: proxyCtx as any }),
   });
 }
