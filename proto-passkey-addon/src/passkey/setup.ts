@@ -1,4 +1,3 @@
-import { setupDb } from "./db";
 import { sessions } from "@/session/store";
 import { RouteMiddleware } from "rwsdk/router";
 import { requestInfo } from "rwsdk/worker";
@@ -7,7 +6,7 @@ import { ErrorResponse } from "rwsdk/worker";
 export function setupPasskeyAuth() {
   const setupPasskeyAuthMiddleware: RouteMiddleware = async () => {
     const { ctx, request, headers } = requestInfo;
-    await setupDb();
+
     try {
       ctx.session = await sessions.load(request);
     } catch (error) {
