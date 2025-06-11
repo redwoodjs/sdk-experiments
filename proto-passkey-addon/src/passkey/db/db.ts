@@ -24,8 +24,7 @@ export interface Database {
   credentials: Credential;
 }
 
-// Create a Kysely instance that uses the DO
-export function createDb() {
+export function getDb() {
   if (!env.PASSKEY_DURABLE_OBJECT) {
     throw new Error("PASSKEY_DURABLE_OBJECT binding not found in environment");
   }
@@ -38,18 +37,18 @@ export function createDb() {
 
 // Legacy functions for backwards compatibility
 export async function createUser(username: string): Promise<User> {
-  const db = createDb();
   const user: User = {
     id: crypto.randomUUID(),
     username,
     createdAt: new Date().toISOString(),
   };
+  const db = getDb();
   await db.insertInto("users").values(user).execute();
   return user;
 }
 
 export async function getUserById(id: string): Promise<User | undefined> {
-  const db = createDb();
+  const db = getDb();
   return await db
     .selectFrom("users")
     .selectAll()
@@ -62,13 +61,13 @@ export async function createCredential(
 ): Promise<Credential> {
   log("Creating credential for user: %s", credential.userId);
 
-  const db = createDb();
   const newCredential: Credential = {
     id: crypto.randomUUID(),
     createdAt: new Date().toISOString(),
     ...credential,
   };
 
+  const db = getDb();
   await db.insertInto("credentials").values(newCredential).execute();
   log("Credential created successfully: %s", newCredential.id);
   return newCredential;
@@ -77,7 +76,7 @@ export async function createCredential(
 export async function getCredentialById(
   credentialId: string
 ): Promise<Credential | undefined> {
-  const db = createDb();
+  const db = getDb();
   return await db
     .selectFrom("credentials")
     .selectAll()
@@ -89,7 +88,7 @@ export async function updateCredentialCounter(
   credentialId: string,
   counter: number
 ): Promise<void> {
-  const db = createDb();
+  const db = getDb();
   await db
     .updateTable("credentials")
     .set({ counter })
@@ -100,7 +99,7 @@ export async function updateCredentialCounter(
 export async function getUserCredentials(
   userId: string
 ): Promise<Credential[]> {
-  const db = createDb();
+  const db = getDb();
   return await db
     .selectFrom("credentials")
     .selectAll()

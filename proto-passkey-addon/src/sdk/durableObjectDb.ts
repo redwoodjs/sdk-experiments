@@ -1,34 +1,42 @@
-import { Kysely, CompiledQuery, QueryResult } from "kysely";
+import {
+  Kysely,
+  Driver,
+  DatabaseConnection,
+  SqliteDialect,
+  CompiledQuery,
+  QueryResult,
+} from "kysely";
 import { DODialect } from "kysely-do";
 import { createMigrator } from "./index.js";
 import debug from "./logger.js";
+import { SqliteAdapter, SqliteIntrospector, SqliteQueryCompiler } from "kysely";
+import { DurableObject } from "cloudflare:workers";
 
 const log = debug("sdk:do-db");
 
-// Setup function for Durable Object side
-export function setupDurableObjectDb<T>(
-  ctx: DurableObjectState,
-  migrations: Record<string, any>,
-  migrationTableName = "__migrations"
-): DurableObjectDbWrapper<T> {
-  const db = new Kysely<T>({
-    dialect: new DODialect({ ctx }),
-  });
-
-  return new DurableObjectDbWrapper(db, migrations, migrationTableName, ctx);
-}
-
-export class DurableObjectDbWrapper<T> {
+// Base class for Durable Objects that need Kysely database access
+export class KyselyDurableObject<T = any> extends DurableObject {
+  public migrations: Record<string, any>;
+  public kysely: Kysely<T>;
   private initialized = false;
+  private migrationTableName: string;
 
   constructor(
-    public kysely: Kysely<T>,
-    private migrations: Record<string, any>,
-    private migrationTableName: string,
-    private ctx: DurableObjectState
-  ) {}
+    ctx: DurableObjectState,
+    env: any,
+    migrations: Record<string, any>,
+    migrationTableName = "__migrations"
+  ) {
+    super(ctx, env);
+    this.migrations = migrations;
+    this.migrationTableName = migrationTableName;
 
-  async initialize(): Promise<void> {
+    this.kysely = new Kysely<T>({
+      dialect: new DODialect({ ctx }),
+    });
+  }
+
+  private async initialize(): Promise<void> {
     if (this.initialized) {
       log("Database already initialized, skipping");
       return;
@@ -45,30 +53,130 @@ export class DurableObjectDbWrapper<T> {
     log("Database initialization complete");
   }
 
-  // RPC method that exposes the raw sql.exec
-  async sqlExec(sql: string, ...parameters: unknown[]) {
+  // RPC method for executing queries - must be on prototype for RPC to work
+  async kyselyExecuteQuery<R>(compiledQuery: {
+    sql: string;
+    parameters: readonly unknown[];
+  }): Promise<QueryResult<R>> {
     await this.initialize();
 
-    log("Executing SQL: %s with params: %o", sql, parameters);
+    log(
+      "Executing SQL: %s with params: %o",
+      compiledQuery.sql,
+      compiledQuery.parameters
+    );
 
-    // Call the raw ctx.storage.sql.exec directly
-    return await (this.ctx.storage as any).sql.exec(sql, ...parameters);
+    // Forward to the internal Kysely database
+    const result = await this.kysely.executeQuery({
+      sql: compiledQuery.sql,
+      parameters: compiledQuery.parameters,
+      query: {} as any,
+      queryId: {} as any,
+    } as CompiledQuery<unknown>);
+    return result as QueryResult<R>;
   }
 }
 
-// Create a fake ctx object that forwards to the DO
-function createProxyCtx(stub: { db: DurableObjectDbWrapper<any> }) {
-  return {
-    storage: {
-      sql: {
-        exec: async (sql: string, ...parameters: unknown[]) => {
-          log("Forwarding SQL to Durable Object: %s", sql);
-          // Call the raw sql.exec directly on the DO
-          return await stub.db.sqlExec(sql, ...parameters);
-        },
-      },
-    },
-  };
+// DOWorkerDialect - mimics DODialect but proxies to DO
+class DOWorkerDialect {
+  #config: { stub: any };
+
+  constructor(config: { stub: any }) {
+    this.#config = config;
+  }
+
+  createAdapter() {
+    return new SqliteAdapter();
+  }
+
+  createDriver() {
+    return new DOWorkerDriver(this.#config);
+  }
+
+  createQueryCompiler() {
+    return new SqliteQueryCompiler();
+  }
+
+  createIntrospector(db: any) {
+    return new SqliteIntrospector(db);
+  }
+}
+
+class DOWorkerDriver implements Driver {
+  #config: { stub: any };
+
+  constructor(config: { stub: any }) {
+    this.#config = config;
+  }
+
+  async init() {}
+
+  async acquireConnection(): Promise<DatabaseConnection> {
+    return new DOWorkerConnection(this.#config.stub.kyselyExecuteQuery);
+  }
+
+  async beginTransaction(conn: any) {
+    return await conn.beginTransaction();
+  }
+
+  async commitTransaction(conn: any) {
+    return await conn.commitTransaction();
+  }
+
+  async rollbackTransaction(conn: any) {
+    return await conn.rollbackTransaction();
+  }
+
+  async releaseConnection(_conn: any) {}
+
+  async destroy() {}
+}
+
+class DOWorkerConnection implements DatabaseConnection {
+  #executeQuery: (compiledQuery: {
+    sql: string;
+    parameters: readonly unknown[];
+  }) => Promise<QueryResult<any>>;
+
+  constructor(
+    executeQuery: (compiledQuery: {
+      sql: string;
+      parameters: readonly unknown[];
+    }) => Promise<QueryResult<any>>
+  ) {
+    this.#executeQuery = executeQuery;
+  }
+
+  async executeQuery<R>(compiledQuery: {
+    sql: string;
+    parameters: readonly unknown[];
+  }): Promise<QueryResult<R>> {
+    log("Forwarding query to Durable Object: %s", compiledQuery.sql);
+
+    // Call the DO's kyselyExecuteQuery method
+    const result = await this.#executeQuery({
+      sql: compiledQuery.sql,
+      parameters: compiledQuery.parameters,
+    });
+
+    return result as QueryResult<R>;
+  }
+
+  async beginTransaction() {
+    throw new Error("Transactions are not supported yet.");
+  }
+
+  async commitTransaction() {
+    throw new Error("Transactions are not supported yet.");
+  }
+
+  async rollbackTransaction() {
+    throw new Error("Transactions are not supported yet.");
+  }
+
+  async *streamQuery(_compiledQuery: any, _chunkSize?: any) {
+    throw new Error("DO Driver does not support streaming");
+  }
 }
 
 export function createDurableObjectDb<T>(
@@ -78,10 +186,7 @@ export function createDurableObjectDb<T>(
   const durableObjectId = durableObjectBinding.idFromName(name);
   const stub = durableObjectBinding.get(durableObjectId);
 
-  // Create a fake ctx that forwards to the DO
-  const proxyCtx = createProxyCtx(stub);
-
   return new Kysely<T>({
-    dialect: new DODialect({ ctx: proxyCtx as any }),
+    dialect: new DOWorkerDialect({ stub }) as any,
   });
 }
