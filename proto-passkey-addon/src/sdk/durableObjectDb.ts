@@ -15,7 +15,7 @@ export function setupDurableObjectDb<T>(
     dialect: new DODialect({ ctx }),
   });
 
-  return new DurableObjectDbWrapper(db, migrations, migrationTableName);
+  return new DurableObjectDbWrapper(db, migrations, migrationTableName, ctx);
 }
 
 export class DurableObjectDbWrapper<T> {
@@ -24,7 +24,8 @@ export class DurableObjectDbWrapper<T> {
   constructor(
     public kysely: Kysely<T>,
     private migrations: Record<string, any>,
-    private migrationTableName: string
+    private migrationTableName: string,
+    private ctx: DurableObjectState
   ) {}
 
   async initialize(): Promise<void> {
@@ -44,27 +45,14 @@ export class DurableObjectDbWrapper<T> {
     log("Database initialization complete");
   }
 
-  // RPC method for executing queries
-  async executeQuery<R>(compiledQuery: {
-    sql: string;
-    parameters: readonly unknown[];
-  }): Promise<QueryResult<R>> {
+  // RPC method that exposes the raw sql.exec
+  async sqlExec(sql: string, ...parameters: unknown[]) {
     await this.initialize();
 
-    log(
-      "Executing SQL: %s with params: %o",
-      compiledQuery.sql,
-      compiledQuery.parameters
-    );
+    log("Executing SQL: %s with params: %o", sql, parameters);
 
-    // Forward to the internal Kysely database - cast to match Kysely's interface
-    const result = await this.kysely.executeQuery({
-      sql: compiledQuery.sql,
-      parameters: compiledQuery.parameters,
-      query: {} as any,
-      queryId: {} as any,
-    } as CompiledQuery<unknown>);
-    return result as QueryResult<R>;
+    // Call the raw ctx.storage.sql.exec directly
+    return await (this.ctx.storage as any).sql.exec(sql, ...parameters);
   }
 }
 
@@ -75,16 +63,8 @@ function createProxyCtx(stub: { db: DurableObjectDbWrapper<any> }) {
       sql: {
         exec: async (sql: string, ...parameters: unknown[]) => {
           log("Forwarding SQL to Durable Object: %s", sql);
-          const result = await stub.db.executeQuery({
-            sql,
-            parameters,
-          });
-
-          // Convert QueryResult to the format expected by DODialect
-          return {
-            toArray: () => result.rows,
-            rowsWritten: Number(result.numAffectedRows || 0),
-          };
+          // Call the raw sql.exec directly on the DO
+          return await stub.db.sqlExec(sql, ...parameters);
         },
       },
     },
