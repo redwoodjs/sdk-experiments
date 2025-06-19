@@ -72,20 +72,18 @@ Remember to change `WEBAUTHN_APP_NAME` to your app's name.
 Modify your `src/worker.tsx` to integrate the passkey authentication and routes.
 
 ```typescript
+import { env } from "cloudflare:workers";
 import { defineApp, ErrorResponse } from "rwsdk/worker";
 import { index, render, route, prefix } from "rwsdk/router";
-import { env } from "cloudflare:workers";
 import { Document } from "@/app/Document";
 import { Home } from "@/app/pages/Home";
 import { setCommonHeaders } from "@/app/headers";
-import { authRoutes, User } from "@/passkey";
-import { setupPasskeyAuth } from "./passkey/setup";
-import { Session } from "./session/durableObject";
+import { authRoutes } from "@/passkey/routes";
+import { setupPasskeyAuth } from "@/passkey/setup";
+import { Session } from "@/session/durableObject";
 
-export { SessionDurableObject } from "./session/durableObject";
+export { SessionDurableObject } from "@/session/durableObject";
 export { PasskeyDurableObject } from "@/passkey/durableObject";
-
-const log = debug("passkey:worker");
 
 export type AppContext = {
   session: Session | null;
@@ -138,4 +136,4 @@ Now you can run the dev server:
 pnpm dev
 ```
 
-You should now have a working passkey authentication flow in your RedwoodSDK application. 
+You should now have a working passkey authentication flow in your RedwoodSDK application!
