@@ -5,9 +5,9 @@ import { Document } from "@/app/Document";
 import { Home } from "@/app/pages/Home";
 import { setCommonHeaders } from "@/app/headers";
 import { authRoutes, User } from "@/passkey";
-import debug from "./sdk/logger.js";
 import { setupPasskeyAuth } from "./passkey/setup";
 import { Session } from "./session/durableObject";
+import debug from "rwsdk/debug";
 
 export { SessionDurableObject } from "./session/durableObject";
 export { PasskeyDurableObject } from "@/passkey/durableObject";
