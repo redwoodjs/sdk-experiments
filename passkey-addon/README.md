@@ -11,7 +11,6 @@ These instructions assume you are starting with a new RedwoodSDK project, for ex
 Copy the `src` directory from this addon into your project's root directory. This will add the following directories:
 
 - `src/passkey`: Core logic for passkey authentication.
-- `src/sdk`: Shared utilities.
 - `src/session`: Session management using a Durable Object.
 
 ### 2. Update `package.json`
