@@ -27,7 +27,7 @@
     "debug": "^4.4.1",
     "kysely": "^0.28.2",
     "kysely-do": "^0.0.1-rc.1",
-    "rwsdk": "0.1.0-alpha.7"
+    "rwsdk": "0.1.0-alpha.17-test.20250619030106"
   },
   "devDependencies": {
     "@types/debug": "^4.1.12",

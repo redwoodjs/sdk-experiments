@@ -1,6 +1,6 @@
-import debug from "../../sdk/logger.js";
+import { createDb } from "rwsdk/db";
+import debug from "rwsdk/debug";
 import { env } from "cloudflare:workers";
-import { createDb } from "@/sdk/durableObjectDb";
 
 const log = debug("passkey:db");
 

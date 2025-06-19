@@ -1,5 +1,5 @@
+import debug from "rwsdk/debug";
 import { Kysely, Migration } from "kysely";
-import debug from "@/sdk/logger.js";
 import { Database } from "./db";
 
 const log = debug("passkey:db:migrations");
