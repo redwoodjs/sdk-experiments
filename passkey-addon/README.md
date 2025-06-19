@@ -9,7 +9,7 @@ These instructions assume you are starting with a new RedwoodSDK project, for ex
 ### 0. Download this addon
 
 ```
-npx degit redwoodjs/sdk-experiments/passkey-addon#proto-passkey-addon .tmp_passkey_addon
+npx degit redwoodjs/sdk-experiments/passkey-addon .tmp_passkey_addon
 ```
 
 ### 1. Copy files
