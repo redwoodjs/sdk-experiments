@@ -6,6 +6,12 @@ This addon provides passkey (WebAuthn) authentication for a RedwoodSDK project.
 
 These instructions assume you are starting with a new RedwoodSDK project, for example from `npx create-rwsdk my-project-name`.
 
+### 0. Download this addon
+
+```
+npx degit redwoodjs/sdk-experiments/passkey-addon#proto-passkey-addon .tmp_passkey_addon
+```
+
 ### 1. Copy files
 
 Copy the `src` directory from this addon into your project's root directory. This will add the following directories:
