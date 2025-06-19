@@ -23,6 +23,7 @@ Add the following dependencies to your `package.json` file:
   "@simplewebauthn/browser": "^13.1.0",
   "@simplewebauthn/server": "^13.1.1",
   "kysely": "^0.28.2",
+  "rwsdk": "0.1.0-alpha.17-test.20250619030106"
 }
 ```
 
