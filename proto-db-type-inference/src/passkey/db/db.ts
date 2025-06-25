@@ -1,41 +1,30 @@
 import { createDb } from "rwsdk/db";
 import debug from "rwsdk/debug";
 import { env } from "cloudflare:workers";
+import type { Database } from "@/sdk/db";
+import { migrations } from "./migrations";
 
 const log = debug("passkey:db");
 
-export interface User {
-  id: string;
-  username: string;
-  createdAt: string;
-}
+export type PasskeyDatabase = Database<typeof migrations>;
+export type User = PasskeyDatabase["users"];
+export type Credential = PasskeyDatabase["credentials"];
 
-export interface Credential {
-  id: string;
-  userId: string;
-  createdAt: string;
-  credentialId: string;
-  publicKey: Uint8Array;
-  counter: number;
-}
-
-export interface Database {
-  users: User;
-  credentials: Credential;
-}
-
-export const db = createDb<Database>(
+export const db = createDb<PasskeyDatabase>(
   env.PASSKEY_DURABLE_OBJECT,
   "passkey-main"
 );
 
-export async function createUser(username: string): Promise<User> {
+export async function createUser(
+  username: string,
+  firstName: string = ""
+): Promise<User> {
   const user: User = {
     id: crypto.randomUUID(),
     username,
     createdAt: new Date().toISOString(),
+    firstName,
   };
-  await db.insertInto("users").values(user).execute();
   return user;
 }
 
