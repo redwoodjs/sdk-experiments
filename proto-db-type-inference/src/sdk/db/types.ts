@@ -21,6 +21,10 @@ export interface ColumnBuilder<T = any> {
 
 type ExecutedBuilder<T> = Promise<void> & { __builder_type: T };
 
+type Prettify<T> = {
+  [K in keyof T]: T[K];
+} & {};
+
 export interface TableBuilder<
   TName extends string,
   TSchema extends Record<string, any> = {}
@@ -33,7 +37,7 @@ export interface TableBuilder<
     build?: (
       col: ColumnBuilder<SqlToTsType<T>>
     ) => ColumnBuilder<SqlToTsType<T>>
-  ): TableBuilder<TName, TSchema & Record<K, SqlToTsType<T>>>;
+  ): TableBuilder<TName, Prettify<TSchema & Record<K, SqlToTsType<T>>>>;
   execute(): ExecutedBuilder<this>;
 }
 
@@ -49,7 +53,7 @@ export interface AlterTableBuilder<
     build?: (
       col: ColumnBuilder<SqlToTsType<T>>
     ) => ColumnBuilder<SqlToTsType<T>>
-  ): AlterTableBuilder<TName, TSchema & Record<K, SqlToTsType<T>>>;
+  ): AlterTableBuilder<TName, Prettify<TSchema & Record<K, SqlToTsType<T>>>>;
   execute(): ExecutedBuilder<this>;
 }
 
@@ -83,7 +87,7 @@ export type ExtractAlterSchema<T> = T extends AlterTableBuilder<
 export type MergeSchemas<A, B> = {
   [K in keyof A | keyof B]: K extends keyof A
     ? K extends keyof B
-      ? A[K] & B[K]
+      ? Prettify<A[K] & B[K]>
       : A[K]
     : K extends keyof B
     ? B[K]
@@ -134,10 +138,6 @@ type InferredDatabase<TMigrations extends Migrations> = MergeSchemas<
   CreatedTables<TMigrations>,
   AlteredTables<TMigrations>
 >;
-
-type Prettify<T> = {
-  [K in keyof T]: T[K];
-} & {};
 
 export type Database<TMigrations extends Migrations = Migrations> = Prettify<
   InferredDatabase<TMigrations>
