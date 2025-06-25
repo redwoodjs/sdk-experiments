@@ -25,6 +25,7 @@ export async function createUser(
     createdAt: new Date().toISOString(),
     firstName,
   };
+  await db.insertInto("users").values(user).execute();
   return user;
 }
 
@@ -49,6 +50,7 @@ export async function createCredential(
 
   await db.insertInto("credentials").values(newCredential).execute();
   log("Credential created successfully: %s", newCredential.id);
+
   return newCredential;
 }
 
