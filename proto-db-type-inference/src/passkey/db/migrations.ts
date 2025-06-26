@@ -1,10 +1,10 @@
 import debug from "rwsdk/debug";
-import type { MigrationDatabase, Migrations } from "@/sdk/db";
+import type { Migrations } from "rwsdk/db";
 export const log = debug("passkey:db:migrations");
 
 export const migrations = {
   "001_initial_schema": {
-    async up(db: MigrationDatabase) {
+    async up(db) {
       return [
         db.schema
           .createTable("users")
@@ -35,7 +35,7 @@ export const migrations = {
     },
   },
   "002_add_first_name": {
-    async up(db: MigrationDatabase) {
+    async up(db) {
       return [
         db.schema
           .alterTable("users")

@@ -25,7 +25,9 @@ export async function createUser(
     createdAt: new Date().toISOString(),
     firstName,
   };
+
   await db.insertInto("users").values(user).execute();
+
   return user;
 }
 
