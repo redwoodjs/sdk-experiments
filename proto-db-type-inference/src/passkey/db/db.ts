@@ -1,7 +1,7 @@
 import { createDb } from "rwsdk/db";
 import debug from "rwsdk/debug";
 import { env } from "cloudflare:workers";
-import type { Database } from "@/sdk/db";
+import type { Database } from "rwsdk/db";
 import { migrations } from "./migrations";
 
 const log = debug("passkey:db");
