@@ -1,19 +1,18 @@
 import debug from "rwsdk/debug";
-import type { Migrations } from "rwsdk/db";
-export const log = debug("passkey:db:migrations");
+import { type Migrations } from "rwsdk/db";
 
 export const migrations = {
   "001_initial_schema": {
     async up(db) {
       return [
-        db.schema
+        await db.schema
           .createTable("users")
           .addColumn("id", "text", (col) => col.primaryKey())
           .addColumn("username", "text", (col) => col.notNull().unique())
           .addColumn("createdAt", "text", (col) => col.notNull())
           .execute(),
 
-        db.schema
+        await db.schema
           .createTable("credentials")
           .addColumn("id", "text", (col) => col.primaryKey())
           .addColumn("userId", "text", (col) =>
@@ -37,7 +36,7 @@ export const migrations = {
   "002_add_first_name": {
     async up(db) {
       return [
-        db.schema
+        await db.schema
           .alterTable("users")
           .addColumn("firstName", "text", (col) => col.notNull().defaultTo(""))
           .execute(),

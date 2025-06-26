@@ -1,0 +1,51 @@
+{
+  // Schema reference for wrangler configuration
+  "$schema": "node_modules/wrangler/config-schema.json",
+
+  // Name of your worker
+  "name": "__change_me__",
+
+  // Entry point for your worker
+  "main": "src/worker.tsx",
+
+  // Compatibility settings
+  "compatibility_date": "2025-05-07",
+  "compatibility_flags": ["nodejs_compat"],
+
+  // Assets configuration
+  "assets": {
+    "binding": "ASSETS"
+  },
+
+  // Observability settings
+  "observability": {
+    "enabled": true
+  },
+
+  // Durable Objects configuration
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "SESSION_DURABLE_OBJECT",
+        "class_name": "SessionDurableObject"
+      },
+      {
+        "name": "PASSKEY_DURABLE_OBJECT",
+        "class_name": "PasskeyDurableObject"
+      }
+    ]
+  },
+
+  // Environment variables
+  "vars": {
+    "WEBAUTHN_APP_NAME": "RwSDK Demo App"
+  },
+
+  // Migrations
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["PasskeyDurableObject"]
+    }
+  ]
+}
