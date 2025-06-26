@@ -3,6 +3,7 @@ import { env } from "cloudflare:workers";
 import { createDb } from "rwsdk/db";
 import type { Database } from "rwsdk/db";
 import debug from "rwsdk/debug";
+
 import type { migrations } from "./migrations";
 
 const log = debug("passkey:db");
