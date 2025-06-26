@@ -1,28 +1,15 @@
-import { createDb } from "rwsdk/db";
-import debug from "rwsdk/debug";
 import { env } from "cloudflare:workers";
+
+import { createDb } from "rwsdk/db";
+import type { Database } from "rwsdk/db";
+import debug from "rwsdk/debug";
+import type { migrations } from "./migrations";
 
 const log = debug("passkey:db");
 
-export interface User {
-  id: string;
-  username: string;
-  createdAt: string;
-}
-
-export interface Credential {
-  id: string;
-  userId: string;
-  createdAt: string;
-  credentialId: string;
-  publicKey: Uint8Array;
-  counter: number;
-}
-
-export interface Database {
-  users: User;
-  credentials: Credential;
-}
+export type PasskeyDatabase = Database<typeof migrations>;
+export type User = PasskeyDatabase["users"];
+export type Credential = PasskeyDatabase["credentials"];
 
 export const db = createDb<Database>(
   env.PASSKEY_DURABLE_OBJECT,
