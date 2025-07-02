@@ -1,11 +1,8 @@
 import { initRealtimeClient } from "rwsdk/realtime/client";
-
-//import { initClient, initClientNavigation } from "rwsdk/client";
-
-// initClient();
+import { initClientNavigation } from "rwsdk/client";
 
 initRealtimeClient({
   key: window.location.pathname,
 });
 
-// initClientNavigation();
+initClientNavigation();

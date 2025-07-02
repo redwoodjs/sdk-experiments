@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       rwsdk:
-        specifier: 0.1.6-test.20250702140551
-        version: 0.1.6-test.20250702140551(rollup@4.44.1)(typescript@5.8.3)(vite@6.3.5(@types/node@22.16.0)(terser@5.43.1))(webpack@5.99.9)(workerd@1.20250617.0)
+        specifier: 0.1.8
+        version: 0.1.8(rollup@4.44.1)(typescript@5.8.3)(vite@6.3.5(@types/node@22.16.0)(terser@5.43.1))(webpack@5.99.9)(workerd@1.20250617.0)
     devDependencies:
       '@cloudflare/vite-plugin':
         specifier: 1.7.4
@@ -1691,8 +1691,8 @@ packages:
   run-parallel@1.2.0:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
 
-  rwsdk@0.1.6-test.20250702140551:
-    resolution: {integrity: sha512-4eectzhBivrYLwpwdAhhjp9JsI8TVX0Q32t/3ICModl5vZ0fMw/oej3nK81WVF1CzEcajf1d7K5LT9Lf6Z+evw==}
+  rwsdk@0.1.8:
+    resolution: {integrity: sha512-n7PctweQW/TSve+cktU8qmTiTHodfYx0WjviKi1tPCN5YYlyiQoDN7sQjQlEopHUwluFlWpcQS+q16HhwNhxNg==}
     hasBin: true
     peerDependencies:
       vite: ^6.2.6
@@ -3595,7 +3595,7 @@ snapshots:
     dependencies:
       queue-microtask: 1.2.3
 
-  rwsdk@0.1.6-test.20250702140551(rollup@4.44.1)(typescript@5.8.3)(vite@6.3.5(@types/node@22.16.0)(terser@5.43.1))(webpack@5.99.9)(workerd@1.20250617.0):
+  rwsdk@0.1.8(rollup@4.44.1)(typescript@5.8.3)(vite@6.3.5(@types/node@22.16.0)(terser@5.43.1))(webpack@5.99.9)(workerd@1.20250617.0):
     dependencies:
       '@ast-grep/napi': 0.38.6
       '@cloudflare/vite-plugin': 1.7.4(rollup@4.44.1)(vite@6.3.5(@types/node@22.16.0)(terser@5.43.1))(workerd@1.20250617.0)(wrangler@4.22.0(@cloudflare/workers-types@4.20250702.0))
