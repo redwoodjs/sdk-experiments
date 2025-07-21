@@ -1,19 +1,42 @@
-import { initClient, initClientNavigation } from 'rwsdk/client'
-import { initRealtimeClient } from 'rwsdk/realtime/client'
-
 const url = new URL(window.location.href)
 
-if (url.searchParams.has('realtime')) {
-  initRealtimeClient({ key: 'rwsdk-realtime' })
-  console.log('realtime RSC')
-} else {
-  initClient()
-  console.log('normal RSC')
+const isRealtime = url.searchParams.has('realtime')
+const isSpa = url.searchParams.has('spa')
+
+async function initFetchSpa() {
+  const { initClientNavigation, initClient } = await import('rwsdk/client')
+  initClient(initClientNavigation())
 }
 
-if (url.searchParams.has('spa')) {
-  initClientNavigation()
-  console.log('client-side navigation')
+async function initFetchRsc() {
+  const { initClient } = await import('rwsdk/client')
+  initClient()
+}
+
+async function initRealtimeSpa() {
+  const { initRealtimeClient } = await import('rwsdk/realtime/client')
+  const { initClientNavigation } = await import('rwsdk/client')
+
+  initRealtimeClient({
+    key: 'rwsdk-realtime',
+    ...initClientNavigation()
+  })
+}
+
+async function initRealtimeRsc() {
+  const { initRealtimeClient } = await import('rwsdk/realtime/client')
+
+  initRealtimeClient({
+    key: 'rwsdk-realtime'
+  })
+}
+
+if (isRealtime && isSpa) {
+  initRealtimeSpa()
+} else if (isRealtime) {
+  initRealtimeRsc()
+} else if (isSpa) {
+  initFetchSpa()
 } else {
-  console.log('normal navigation')
+  initFetchRsc()
 }

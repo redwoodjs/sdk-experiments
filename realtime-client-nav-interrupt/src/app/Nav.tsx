@@ -6,8 +6,8 @@ export function Nav() {
   const isSpaMode = new URL(requestInfo.request.url).searchParams.has('spa')
   const isRealtimeMode = new URL(requestInfo.request.url).searchParams.has('realtime')
 
-  const url = (path: string) => {
-    const params = new URLSearchParams()
+  const url = (path: string, extraParams: Record<string, string> = {}) => {
+    const params = new URLSearchParams(extraParams)
     if (isSpaMode) params.set('spa', '')
     if (isRealtimeMode) params.set('realtime', '')
     const search = params.toString()
@@ -30,8 +30,8 @@ export function Nav() {
         <a href={url('/test')} className="hover:underline hover:text-orange-500">
           Test
         </a>
-        <a href={url('/?redirect=test')} className="hover:underline hover:text-orange-500">
-          Redirect to test
+        <a href={url('/', { 404: 'true' })} className="hover:underline hover:text-orange-500">
+          Force a 404
         </a>
       </div>
       <a
