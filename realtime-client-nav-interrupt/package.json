@@ -1,0 +1,39 @@
+{
+  "name": "minimal-rwsdk-rsc",
+  "version": "1.0.0",
+  "type": "module",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "vite dev --force",
+    "build": "vite build",
+    "preview": "vite build && vite preview",
+    "ship": "vite build && wrangler deploy",
+    "types": "wrangler types --include-runtime false --strict-vars false",
+    "tail": "wrangler tail"
+  },
+  "dependencies": {
+    "rwsdk": "0.1.20"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.9.6",
+    "@cloudflare/workers-types": "^4.20250719.0",
+    "@tailwindcss/vite": "^4.1.11",
+    "@types/node": "^24.0.15",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "daisyui": "^5.0.46",
+    "tailwindcss": "^4.1.11",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5",
+    "wrangler": "^4.25.0"
+  },
+  "prettier": {
+    "printWidth": 100,
+    "tabWidth": 2,
+    "useTabs": false,
+    "singleQuote": true,
+    "semi": false,
+    "trailingComma": "none"
+  }
+}

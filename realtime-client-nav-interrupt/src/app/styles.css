@@ -1,0 +1,12 @@
+@import 'tailwindcss';
+
+@plugin "daisyui" {
+  themes: light --default;
+  logs: false;
+}
+
+@plugin "daisyui/theme" {
+  name: 'light';
+  default: true;
+  --color-success: #009f00;
+}
