@@ -1,10 +1,9 @@
 "use client";
 
-import { AuthContext } from "@/app/context/AuthContext";
-import { useContext } from "react";
+import { useAuth } from "@/app/context/AuthProvider";
 
 export function QuestionListPage() {
-  const auth = useContext(AuthContext);
+  const auth = useAuth();
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

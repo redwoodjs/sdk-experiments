@@ -1,4 +1,4 @@
-import { AuthProvider } from "@/app/context/AuthContext";
+import { AuthProvider } from "@/app/context/AuthProvider";
 import type { LayoutProps } from "rwsdk/router";
 
 export async function MainLayout({ children }: LayoutProps) {
