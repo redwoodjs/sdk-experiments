@@ -32,6 +32,7 @@
     "@simplewebauthn/browser": "^13.1.0",
     "@simplewebauthn/server": "^13.1.1",
     "react": "19.2.0-canary-0bdb9206-20250818",
+    "react-compiler-runtime": "19.1.0-rc.2",
     "react-dom": "19.2.0-canary-0bdb9206-20250818",
     "react-server-dom-webpack": "19.2.0-canary-0bdb9206-20250818",
     "rwsdk": "0.2.0-alpha.15-test.20250820034158"
