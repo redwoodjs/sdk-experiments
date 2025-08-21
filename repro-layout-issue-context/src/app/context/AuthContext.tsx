@@ -20,7 +20,6 @@ export const AuthContext = createContext<AuthContextType | undefined>(
 );
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  console.log("######### AuthProvider");
   return (
     <AuthContext.Provider
       value={{

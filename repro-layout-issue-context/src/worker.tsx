@@ -23,5 +23,6 @@ export default defineApp([
     prefix("" /*"/questions"*/, [
       layout(MainLayout, [route("/", QuestionListPage)]),
     ]),
+    //prefix("" /*"/questions"*/, [route("/", QuestionListPage)]),
   ]),
 ]);
