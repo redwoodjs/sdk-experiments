@@ -1,8 +1,7 @@
 # Node modules
 node_modules/**
 
-!node_modules/dummy-tree-shake-test
-!node_modules/dummy-tree-shake-test/**
+!node_modules/react-tree-shake-test/**
 
 # Logs
 logs

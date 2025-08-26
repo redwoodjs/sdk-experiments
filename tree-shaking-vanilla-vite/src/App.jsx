@@ -1,4 +1,4 @@
-import { Button } from "dummy-tree-shake-test";
+import { Button } from "react-tree-shake-test";
 import "./App.css";
 
 function App() {
