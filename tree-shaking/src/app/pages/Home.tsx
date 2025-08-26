@@ -1,5 +1,5 @@
 "use client";
-import { Button } from "dummy-tree-shake-test";
+import { Button } from "react-tree-shake-test";
 
 export function Home() {
   return (

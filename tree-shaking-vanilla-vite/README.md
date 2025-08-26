@@ -1,13 +1,13 @@
 # Tree Shaking Vanilla Vite
 
-A vanilla Vite React SPA project for testing tree shaking behavior with the `dummy-tree-shake-test` component library.
+A vanilla Vite React SPA project for testing tree shaking behavior with the `react-tree-shake-test` component library.
 
 ## What This Tests
 
-This project imports only the `Button` component from `dummy-tree-shake-test`:
+This project imports only the `Button` component from `react-tree-shake-test`:
 
 ```jsx
-import { Button } from 'dummy-tree-shake-test'
+import { Button } from 'react-tree-shake-test'
 ```
 
 The component library contains 5 components:
