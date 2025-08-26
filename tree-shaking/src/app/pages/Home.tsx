@@ -1,9 +1,8 @@
 "use client";
-
-import { complexOperation } from "dummy-tree-shake-test";
+import { add } from "dummy-tree-shake-test";
 
 export function Home() {
-  console.log(complexOperation("Hello", 10));
+  console.log("############", add(1, 2));
   return (
     <div>
       <h1>Hello World</h1>
