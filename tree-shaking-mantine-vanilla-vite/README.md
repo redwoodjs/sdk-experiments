@@ -4,10 +4,10 @@ A vanilla Vite React SPA project for testing tree shaking behavior with Mantine 
 
 ## What This Tests
 
-This project imports only specific components from `@mantine/core`:
+This project imports only the Button component from `@mantine/core`:
 
 ```jsx
-import { MantineProvider, Button, Container, Title, Text } from '@mantine/core'
+import { MantineProvider, Button } from '@mantine/core'
 ```
 
 Mantine has hundreds of components - this test shows whether unused components get tree-shaken from the final bundle.

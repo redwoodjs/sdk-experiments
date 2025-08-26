@@ -1,4 +1,4 @@
-import { MantineProvider, Button, Container, Title, Text } from '@mantine/core'
+import { MantineProvider, Button } from '@mantine/core'
 
 function App() {
   const handleClick = () => {
@@ -7,17 +7,17 @@ function App() {
 
   return (
     <MantineProvider>
-      <Container py="xl">
-        <Title order={1} mb="md">Tree Shaking Test - Mantine + Vanilla Vite</Title>
-        <Text mb="lg" c="dimmed">
+      <div style={{ padding: '2rem' }}>
+        <h1>Tree Shaking Test - Mantine + Vanilla Vite</h1>
+        <p>
           This project imports only the Button component from @mantine/core.
           Other Mantine components should be tree-shaken out of the bundle.
-        </Text>
+        </p>
         
         <Button onClick={handleClick} variant="filled">
           Mantine Button
         </Button>
-      </Container>
+      </div>
     </MantineProvider>
   )
 }
