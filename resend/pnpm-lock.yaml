@@ -18,8 +18,8 @@ importers:
         specifier: ^6.0.2
         version: 6.0.2(@react-email/render@1.2.2(react-dom@19.2.0-canary-39cad7af-20250411(react@19.2.0-canary-39cad7af-20250411))(react@19.2.0-canary-39cad7af-20250411))
       rwsdk:
-        specifier: 0.3.4
-        version: 0.3.4(rollup@4.50.1)(typescript@5.9.2)(vite@6.3.5(@types/node@22.18.1)(terser@5.44.0))(webpack@5.101.3)(workerd@1.20250902.0)
+        specifier: 0.3.6
+        version: 0.3.6(rollup@4.50.1)(typescript@5.9.2)(vite@6.3.5(@types/node@22.18.1)(terser@5.44.0))(webpack@5.101.3)(workerd@1.20250902.0)
     devDependencies:
       '@cloudflare/vite-plugin':
         specifier: 1.7.4
@@ -2010,8 +2010,8 @@ packages:
   run-parallel@1.2.0:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
 
-  rwsdk@0.3.4:
-    resolution: {integrity: sha512-NrWeYKM3ck/MfdaE/Pb0nW5/G9HFtho6e5jeqeRkizoGKvRqz9eGlWV375yoYcrn0dQQyRlW2NVdwIMvKmQbjQ==}
+  rwsdk@0.3.6:
+    resolution: {integrity: sha512-0gPQxNogZ0+t5xpniM5ywtaJc0LiU+PtAvLivenx6oA3nFmiXf9KOkAbVgYBbAfYbQFiPvcSYBIaB4AqtC+LoQ==}
     hasBin: true
     peerDependencies:
       vite: ^6.2.6
@@ -4258,7 +4258,7 @@ snapshots:
     dependencies:
       queue-microtask: 1.2.3
 
-  rwsdk@0.3.4(rollup@4.50.1)(typescript@5.9.2)(vite@6.3.5(@types/node@22.18.1)(terser@5.44.0))(webpack@5.101.3)(workerd@1.20250902.0):
+  rwsdk@0.3.6(rollup@4.50.1)(typescript@5.9.2)(vite@6.3.5(@types/node@22.18.1)(terser@5.44.0))(webpack@5.101.3)(workerd@1.20250902.0):
     dependencies:
       '@ast-grep/napi': 0.38.7
       '@cloudflare/vite-plugin': 1.7.4(rollup@4.50.1)(vite@6.3.5(@types/node@22.18.1)(terser@5.44.0))(workerd@1.20250902.0)(wrangler@4.34.0(@cloudflare/workers-types@4.20250906.0))
