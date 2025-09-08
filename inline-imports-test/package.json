@@ -1,0 +1,14 @@
+{
+  "name": "inline-imports-test",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "build:inline": "vite build --config vite.inline.config.js",
+    "test": "node dist/index.js",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "vite": "^7.1.5"
+  }
+}
