@@ -128,3 +128,21 @@ This highlights the critical difference between development and production build
 -   **With `inlineDynamicImports`:** The concept of separate chunks is eliminated. All code is hoisted into a single file. This forces the top-level code from the "dynamically" imported module to be evaluated as soon as the main server bundle is loaded, causing a crash before any conditional logic can prevent it. The "dynamic" nature of the import is lost at runtime.
 
 This behavior is the root cause of the entire issue. For a framework that requires a single-file server bundle, this Vite option cannot be safely used with any third-party dependency that contains top-level, browser-specific API calls. The only architectural solution is to prevent that browser-specific code from ever being included in the server bundle in the first place, for which a custom Vite plugin that provides server-safe virtual modules is the most robust approach.
+
+## 8. Final Workaround and Recommendation
+
+Based on the investigation, the immediate workaround for users encountering this issue is to disable the `inlineDynamicImports` feature in their project's Vite configuration.
+
+### Test: Disabling `inlineDynamicImports` in the RedwoodSDK project
+
+The `vite.config.mts` in the `sandpack` experiment project was modified to set `inlineDynamicImports: false` for the `worker` and `ssr` builds.
+
+**Observation:**
+- The build process now created multiple chunks for the worker, including a `vendor.js` chunk containing the dependencies.
+- A `grep` of the final `worker.js` confirmed that the direct reference to `window.localStorage` was no longer present in the main bundle. It was successfully isolated to the vendor chunk.
+- The application built and deployed successfully without the `window is not defined` error.
+
+**Conclusion:**
+Disabling `inlineDynamicImports` serves as an effective, immediate workaround. It prevents the bundler from hoisting the browser-only code from `@codesandbox/nodebox` into the main server bundle. By keeping the vendor code in a separate chunk, it is not eagerly evaluated when the worker starts, thus avoiding the crash.
+
+While this solves the problem, it is a trade-off against the framework's goal of producing a single, optimized worker file. The long-term and most robust solution remains for Sandpack to offer an SSR-friendly build that allows for proper tree-shaking of its browser-specific components.
