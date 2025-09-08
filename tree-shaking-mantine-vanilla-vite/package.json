@@ -1,0 +1,26 @@
+{
+  "name": "tree-shaking-mantine-vanilla-vite",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "19.2.0-canary-39cad7af-20250411",
+    "react-dom": "19.2.0-canary-39cad7af-20250411",
+    "@mantine/core": "^7.0.0",
+    "@mantine/hooks": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.66",
+    "@types/react-dom": "^18.2.22",
+    "@vitejs/plugin-react": "^4.2.1",
+    "vite": "^5.2.0",
+    "postcss": "^8.4.31",
+    "postcss-preset-mantine": "^1.8.0",
+    "postcss-simple-vars": "^7.0.1"
+  }
+}
