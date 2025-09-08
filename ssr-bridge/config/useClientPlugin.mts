@@ -75,12 +75,6 @@ export default async function useClientPlugin({
       return null;
     }
 
-    console.log("################## tryTransform() start", {
-      filePath,
-      env,
-      caller,
-    });
-
     useClientFiles.add(filePath);
 
     const lines = contents.split("\n");
@@ -97,25 +91,15 @@ export default async function useClientPlugin({
     let result;
 
     if (env === "ssr") {
-      const logLine = `console.log('######### reached ${filePath} for SSR');`;
-      lines.splice(0, 0, logLine);
       result = lines.join("\n");
     } else if (env === "rsc") {
       const relativePath = path.relative(projectRootDir, filePath);
       const normalizedPath = "/" + relativePath;
 
-      result = `\
-console.log('######### reached ${normalizedPath} for RSC');\
-export function __getID() { return ${JSON.stringify(normalizedPath)}; }
-`;
+      result = `export function __getID() { return ${JSON.stringify(
+        normalizedPath
+      )}; }`;
     }
-
-    console.log("################## tryTransform() end", {
-      filePath,
-      env,
-      caller,
-      result,
-    });
 
     return result;
   }
