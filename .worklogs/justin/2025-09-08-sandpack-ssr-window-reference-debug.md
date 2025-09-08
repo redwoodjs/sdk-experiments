@@ -67,3 +67,64 @@ The investigation successfully identified and reproduced the issue. The root cau
 -   **Why Vanilla Vite Works:** By default, Vite preserves the dynamic `import()`, meaning the browser-specific code is never loaded or executed during the server-side rendering process.
 
 The solution for the RedwoodSDK framework is to adjust its Vite build configuration to prevent this inlining for specific dependencies like Sandpack, likely by marking them as external to the SSR bundle or finding a way to conditionally exclude them from the inlining process.
+
+## 6. Deeper Investigation: First Principles of `inlineDynamicImports`
+
+While the root cause was identified, a deeper, first-principles investigation was necessary to understand *exactly* how `inlineDynamicImports: true` behaves, as its observed behavior (hoisting browser code to the top-level) was counter-intuitive to the idea of deferred execution.
+
+A new, minimal Vite project was created (`inline-imports-test`) with zero dependencies other than Vite itself. The experiment was designed to test the bundler's output under two conditions: standard build vs. inlined build.
+
+**The Test Subjects:**
+1.  **`dangerous-module.js`**: A module with a `window.localStorage` access at its top level. Importing this in a server environment should crash immediately.
+2.  **`safe-module.js`**: A module with no top-level browser access.
+3.  **`index.js`**: An entry point that uses dynamic `import()` to load both modules under different conditions (at the top-level, inside a function, etc.).
+
+### Experiment 1: Standard Build (`inlineDynamicImports: false`)
+
+The project was first built with the standard Vite/Rollup configuration.
+
+**Observation:**
+-   The `dist` directory contained multiple files: `index.js`, `dangerous-module-....js`, and `safe-module-....js`.
+-   Running `node dist/index.js` executed successfully until the point where `loadDangerousModule()` was explicitly called, at which point it crashed as expected.
+
+**Conclusion:** The bundler correctly preserved the dynamic imports as separate chunks, and the browser-specific code was only loaded and executed when explicitly imported at runtime.
+
+### Experiment 2: Inlined Build (`inlineDynamicImports: true`)
+
+The project was then rebuilt with `inlineDynamicImports: true`.
+
+**Observation:**
+-   The `dist` directory contained only a single `index.js` file.
+-   An inspection of this bundled file revealed that the contents of `dangerous-module.js`, including the `window.localStorage` access, had been **hoisted to the top level of the module scope.** It was not wrapped in any function or promise.
+-   Running `node dist/index.js` crashed **immediately** upon loading the file, before any of the application logic in `index.js` could even run.
+
+### Experiment 3: Testing `treeshake.moduleSideEffects`
+
+As a final test, we hypothesized that Rollup's `treeshake.moduleSideEffects` option could be used to prune the top-level code from `dangerous-module.js` when it was being inlined.
+
+We tried several configurations:
+1.  `moduleSideEffects: 'no-external'`
+2.  `moduleSideEffects: (id) => id.includes('dangerous-module.js')` (Marking it as having side-effects)
+3.  `moduleSideEffects: (id) => !id.includes('dangerous-module.js')` (Marking it as pure)
+
+**Observation:**
+-   All three configurations produced a bundle of the **exact same size**.
+-   Inspecting the bundle confirmed the top-level code from `dangerous-module.js` was still present in all cases.
+-   Running the bundle resulted in the same immediate `ReferenceError: window is not defined`.
+
+**Conclusion:**
+The `treeshake.moduleSideEffects` option has **no effect** in this context. The `inlineDynamicImports: true` directive is a higher-order instruction that overrides the tree-shaking logic. By telling the bundler to inline the module, we are implicitly marking its top-level code as essential and not a "side effect" to be pruned.
+
+## 7. Final, Definitive Conclusion & Key Takeaway
+
+This investigation provided a definitive answer:
+
+**Vite's `inlineDynamicImports: true` option does not preserve the lazy-execution semantics of dynamic imports. It is a code-hoisting mechanism.**
+
+It finds all dynamically imported modules, lifts their top-level code into the global scope of the single output bundle, and replaces the `import()` call with a simple reference to the already-initialized module exports.
+
+This highlights the critical difference between development and production builds:
+-   **In Development / Standard Builds:** A dynamic `import()` creates a separate chunk. The code inside that chunk is never evaluated until the `import()` function is called at runtime. For SSR, the server simply never calls the client-side import, so the dangerous code is never touched.
+-   **With `inlineDynamicImports`:** The concept of separate chunks is eliminated. All code is hoisted into a single file. This forces the top-level code from the "dynamically" imported module to be evaluated as soon as the main server bundle is loaded, causing a crash before any conditional logic can prevent it. The "dynamic" nature of the import is lost at runtime.
+
+This behavior is the root cause of the entire issue. For a framework that requires a single-file server bundle, this Vite option cannot be safely used with any third-party dependency that contains top-level, browser-specific API calls. The only architectural solution is to prevent that browser-specific code from ever being included in the server bundle in the first place, for which a custom Vite plugin that provides server-safe virtual modules is the most robust approach.
