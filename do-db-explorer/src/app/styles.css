@@ -1,0 +1,195 @@
+@import "tailwindcss";
+
+body {
+  min-height: 100vh;
+  padding: 0;
+}
+
+#root, #hydrate-root {
+  width: 100vw;
+  height: 100vh;
+}
+
+/* Theme tokens inspired by Anthropic Claude Code */
+:root {
+  --bg: #FDF0DB;
+  /* Brand palette */
+  --brand-orange: #F47238; /* primary */
+  --brand-red: #E73C36;    /* emphasis / hover */
+  --brand-amber: #FFAD48;  /* secondary accent */
+  --brand-black: #000000;  /* text */
+  --cream: #FDF0DB;        /* RedwoodSDK cream surface, aligned with page bg */
+  --brand-plum: #7A2C3A;   /* deep plum seen in CTA */
+
+  --text: var(--brand-black);
+  --muted: rgba(0,0,0,0.56);
+  --border: rgba(0,0,0,0.12);
+  --surface: rgba(0,0,0,0.05);
+  --surface-strong: rgba(0,0,0,0.08);
+  /* Accent derived from brand */
+  --accent: var(--brand-orange);
+  --accent-600: var(--brand-red);
+  --accent-700: #c0361f; /* deeper tone for active states */
+  --accent-border: rgba(244, 114, 56, 0.40);
+  --accent-surface: rgba(244, 114, 56, 0.06);
+  --focus-ring: rgba(244, 114, 56, 0.35);
+  --radius: 8px;
+  --radius-sm: 6px;
+  --radius-lg: 12px;
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Base typography */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Elements */
+button {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  border-radius: var(--radius-sm);
+}
+
+button:hover:not(:disabled) {
+  background: var(--surface-strong);
+}
+
+input, select, textarea {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--accent-600);
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+table {
+  border-color: var(--border);
+}
+
+thead {
+  background: var(--surface);
+}
+
+aside {
+  background: var(--bg);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+/* Accent utilities */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--surface-strong);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent-600);
+  color: #ffffff;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--accent-600);
+  border-color: var(--accent-700);
+}
+
+.nav-active {
+  background: var(--accent-surface);
+}
+
+/* RedwoodSDK-inspired utilities */
+.heading-serif {
+  font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  letter-spacing: 0.2px;
+}
+
+.card-cream {
+  background: var(--cream);
+  border: 1px dotted rgba(0,0,0,0.25);
+  border-radius: var(--radius);
+}
+
+.border-dotted {
+  border-style: dotted;
+}
+
+.badge {
+  display: inline-block;
+  font-size: 10px;
+  line-height: 1;
+  padding: 3px 6px;
+  border-radius: 9999px;
+  border: 1px dotted rgba(0,0,0,0.35);
+  background: rgba(244, 114, 56, 0.08);
+  color: var(--text);
+}
+
+.btn-danger {
+  border: 1px dotted var(--accent-600);
+  color: var(--accent-600);
+  background: transparent;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: var(--accent-600);
+  color: #ffffff;
+  border-color: var(--accent-700);
+}
+
+/* Button system based on provided design */
+.btn-pill { border-radius: 9999px; height: 40px; padding: 0 16px; font-weight: 700; letter-spacing: 0.2px; }
+
+.btn-outline {
+  background: transparent;
+  border: 2px solid var(--brand-red);
+  color: var(--brand-red);
+  box-shadow: inset 0 0 0 2px var(--cream);
+}
+
+.btn-outline:hover:not(:disabled) {
+  background: rgba(231, 60, 54, 0.08);
+}
+
+.btn-cta {
+  background: var(--brand-plum);
+  color: #fff;
+  border: 2px solid var(--brand-amber);
+  box-shadow: inset 0 0 0 2px rgba(255, 173, 72, 0.25);
+}
+
+.btn-cta:hover:not(:disabled) {
+  background: var(--brand-orange);
+  border-color: var(--brand-red);
+}
+
+.btn-link { background: transparent; border: none; color: var(--brand-red); text-decoration: underline; padding: 0; height: auto; }
+.btn-link:hover { color: var(--brand-orange); }
