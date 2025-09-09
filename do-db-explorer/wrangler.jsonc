@@ -1,0 +1,50 @@
+{
+  // Schema reference for wrangler configuration
+  "$schema": "node_modules/wrangler/config-schema.json",
+
+  // Name of your worker
+  "name": "do-explorer",
+
+  // Entry point for your worker
+  "main": "src/worker.tsx",
+
+  // Compatibility settings
+  "compatibility_date": "2025-05-07",
+  "compatibility_flags": ["nodejs_compat"],
+
+  // Assets configuration
+  "assets": {
+    "binding": "ASSETS"
+  },
+
+  // Observability settings
+  "observability": {
+    "enabled": true
+  },
+
+  // Environment variables
+  "vars": {
+    // Add your environment variables here
+  },
+  "ai": {
+    "binding": "AI"
+  },
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "APP_DURABLE_OBJECT",
+        "class_name": "AppDurableObject"
+      },
+      {
+        "name": "APP_DURABLE_OBJECT_2",
+        "class_name": "AppDurableObject2"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["AppDurableObject", "AppDurableObject2"]
+    }
+  ]
+}
