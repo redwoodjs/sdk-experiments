@@ -22,9 +22,7 @@
     "types": "tsc"
   },
   "dependencies": {
-    "rwsdk": "0.3.7",
-    "@simplewebauthn/browser": "^13.1.0",
-    "@simplewebauthn/server": "^13.1.1"
+    "rwsdk": "0.3.8"
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "1.7.4",
