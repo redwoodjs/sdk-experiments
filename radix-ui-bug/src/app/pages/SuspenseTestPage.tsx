@@ -2,7 +2,7 @@ import React, { Suspense } from "react";
 import { Counter } from "../components/Counter.js";
 import { SuspendedComponent } from "../components/SuspendedComponent.js";
 
-const SuspenseTestPage = () => {
+export const SuspenseTestPage = () => {
   return (
     <div>
       <h1>Suspense and Interactivity Test</h1>
@@ -17,5 +17,3 @@ const SuspenseTestPage = () => {
     </div>
   );
 };
-
-export default SuspenseTestPage;
