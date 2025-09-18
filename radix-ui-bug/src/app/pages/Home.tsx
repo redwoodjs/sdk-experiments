@@ -54,7 +54,7 @@ export function Home({ ctx }: RequestInfo) {
             useId Test
           </a>
           <a
-            href="/suspense-test-page"
+            href="/suspense-test"
             style={{
               padding: "0.75rem 1.5rem",
               backgroundColor: "#ffc107",
@@ -131,7 +131,7 @@ export function Home({ ctx }: RequestInfo) {
             useId Test
           </a>
           <a
-            href="/suspense-test-page"
+            href="/suspense-test"
             style={{
               padding: "0.5rem 1rem",
               backgroundColor: "#ffc107",
