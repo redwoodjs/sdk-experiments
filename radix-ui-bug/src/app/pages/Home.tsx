@@ -53,19 +53,6 @@ export function Home({ ctx }: RequestInfo) {
           >
             useId Test
           </a>
-          <a
-            href="/suspense-test-page"
-            style={{
-              padding: "0.75rem 1.5rem",
-              backgroundColor: "#ffc107",
-              color: "black",
-              textDecoration: "none",
-              borderRadius: "4px",
-              display: "inline-block",
-            }}
-          >
-            Suspense Test
-          </a>
         </div>
       </div>
     );
@@ -129,19 +116,6 @@ export function Home({ ctx }: RequestInfo) {
             }}
           >
             useId Test
-          </a>
-          <a
-            href="/suspense-test-page"
-            style={{
-              padding: "0.5rem 1rem",
-              backgroundColor: "#ffc107",
-              color: "black",
-              textDecoration: "none",
-              borderRadius: "4px",
-              fontSize: "0.875rem",
-            }}
-          >
-            Suspense Test
           </a>
         </p>
       </div>
