@@ -6,6 +6,7 @@ import { Home } from "@/app/pages/Home";
 import { RadixDemo } from "@/app/pages/RadixDemo";
 import { PortalDemo } from "@/app/pages/PortalDemo";
 import { UseIdDemo } from "@/app/pages/UseIdDemo";
+import { SuspenseTestPage } from "@/app/pages/SuspenseTestPage";
 import { setCommonHeaders } from "@/app/headers";
 
 export type AppContext = {};
@@ -21,5 +22,6 @@ export default defineApp([
     route("/radix-demo", RadixDemo),
     route("/portal-demo", PortalDemo),
     route("/useid-demo", UseIdDemo),
+    route("/suspense-test", SuspenseTestPage),
   ]),
 ]);
