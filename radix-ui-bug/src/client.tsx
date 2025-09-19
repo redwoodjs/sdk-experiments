@@ -1,4 +1,5 @@
 //import "virtual:vite-preamble";
-import { initClient } from "rwsdk/client";
 
+import "./sigh";
+import { initClient } from "rwsdk/client";
 initClient();
