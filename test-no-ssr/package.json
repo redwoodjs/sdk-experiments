@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "moment": "^2.30.1",
-    "rwsdk": "0.0.82"
+    "rwsdk": "1.0.0-alpha.1"
   },
   "devDependencies": {
     "@types/lodash": "^4.17.16",

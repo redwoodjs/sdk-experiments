@@ -9,8 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "react": "19.2.0-canary-39cad7af-20250411",
-    "react-dom": "19.2.0-canary-39cad7af-20250411"
+    "react": "19.2.1",
+    "react-dom": "19.2.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",

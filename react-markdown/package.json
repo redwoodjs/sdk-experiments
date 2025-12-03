@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "react-markdown": "^10.1.0",
-    "rwsdk": "0.1.0-alpha.18"
+    "rwsdk": "1.0.0-alpha.1"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",

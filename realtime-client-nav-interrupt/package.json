@@ -13,7 +13,7 @@
     "tail": "wrangler tail"
   },
   "dependencies": {
-    "rwsdk": "0.1.23-test.20250722022949"
+    "rwsdk": "1.0.0-alpha.1"
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "^1.9.6",

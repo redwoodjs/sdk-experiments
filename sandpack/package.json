@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@codesandbox/sandpack-react": "^2.20.0",
-    "rwsdk": "0.3.6"
+    "rwsdk": "1.0.0-alpha.1"
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "1.7.4",

@@ -1,5 +1,5 @@
 {
 	"dependencies": {
-		"rwsdk": "file:/Users/justin/rw/sdk/sdk/rwsdk-0.1.22.tgz"
+		"rwsdk": "1.0.0-alpha.1"
 	}
 }
