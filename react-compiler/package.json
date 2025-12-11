@@ -31,10 +31,10 @@
     "@prisma/client": "~6.8.2",
     "@simplewebauthn/browser": "^13.1.0",
     "@simplewebauthn/server": "^13.1.1",
-    "react": "19.2.1",
+    "react": "19.2.2",
     "react-compiler-runtime": "19.1.0-rc.2",
-    "react-dom": "19.2.1",
-    "react-server-dom-webpack": "19.2.1",
+    "react-dom": "19.2.2",
+    "react-server-dom-webpack": "19.2.2",
     "rwsdk": "1.0.0-alpha.1"
   },
   "devDependencies": {

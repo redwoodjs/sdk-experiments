@@ -23,9 +23,9 @@
   },
   "dependencies": {
     "@fontsource/figtree": "^5.2.10",
-    "react": "19.2.1",
-    "react-dom": "19.2.1",
-    "react-server-dom-webpack": "19.2.1",
+    "react": "19.2.2",
+    "react-dom": "19.2.2",
+    "react-server-dom-webpack": "19.2.2",
     "rwsdk": "1.0.0-beta.32"
   },
   "devDependencies": {
